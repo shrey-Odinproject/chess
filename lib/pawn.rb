@@ -2,14 +2,13 @@
 
 # a chess pawn
 class Pawn
-  attr_reader :symbol, :color
+  attr_reader :color
 
-  def initialize(col = nil)
-    @symbol = colored_symbol
+  def initialize(col)
     @color = col
   end
 
-  def colored_symbol
-    color == 'B' ? "\u2659" : "\u265f"
+  def to_s
+    color == 'W' ? "\u265f" : "\u2659"
   end
 end

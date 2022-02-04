@@ -1,75 +1,47 @@
 # frozen_string_literal: true
 
+require_relative '../lib/pawn'
 # a chess board
 class ChessBoard
   attr_reader :grid
 
   def initialize
-    @grid = Array.new(8) { Array.new(8) }
+    @grid = Array.new(8) { Array.new(8, ' ') }
   end
 
-  def show(boxlen = 3)
-    puts '  0   1   2   3   4   5   6   7'
-    # Define box drawing characters
-    side = '│'
-    topbot = '─'
-    tl = '┌'
-    tr = '┐'
-    bl = '└'
-    br = '┘'
-    lc = '├'
-    rc = '┤'
-    tc = '┬'
-    bc = '┴'
-    crs = '┼'
-    ##############################
-    draw = []
-    grid.each_with_index do |row, rowindex|
-      # TOP OF ROW Upper borders
-      row.each_with_index do |col, colindex|
-        if rowindex == 0
-          colindex == 0 ? start = tl : start = tc
-          draw << start + (topbot * boxlen)
-          colindex == row.length - 1 ? draw << tr : ""
-        end
-      end
-      draw << "\n" if rowindex == 0
-
-      # MIDDLE OF ROW: DATA
-      row.each do |col|
-        draw << side + col.to_s.center(boxlen)
-      end
-      draw << side + "\n"
-
-      # END OF ROW
-      row.each_with_index do |col, colindex|
-        if colindex == 0
-          rowindex == grid.length - 1 ? draw << bl : draw << lc
-          draw << (topbot * boxlen)
-        else
-          rowindex == grid.length - 1 ? draw << bc : draw << crs
-          draw << (topbot * boxlen)
-        end
-        endchar = rowindex == grid.length - 1 ? br : rc
-
-        # Overhang elimination if the next row is shorter
-        if grid[rowindex + 1]
-          if grid[rowindex + 1].length < grid[rowindex].length
-            endchar = br
-          end
-        end
-        colindex == row.length - 1 ? draw << endchar : ""
-      end
-      draw << "\n"
-    end
-
-    draw.each do |char|
-      print char
-    end
-    nil # function breaks without this return
+  def show
+    puts <<-HEREDOC
+           ---+---+---+---+---+---+---+---
+       8  | #{@grid[0][0]} | #{@grid[0][1]} | #{@grid[0][2]} | #{@grid[0][3]} | #{@grid[0][4]} | #{@grid[0][5]} | #{@grid[0][6]} | #{@grid[0][7]} |
+           ---+---+---+---+---+---+---+---
+       7  | #{@grid[1][0]} | #{@grid[1][1]} | #{@grid[1][2]} | #{@grid[1][3]} | #{@grid[1][4]} | #{@grid[1][5]} | #{@grid[1][6]} | #{@grid[1][7]} |
+           ---+---+---+---+---+---+---+---
+       6  | #{@grid[2][0]} | #{@grid[2][1]} | #{@grid[2][2]} | #{@grid[2][3]} | #{@grid[2][4]} | #{@grid[2][5]} | #{@grid[2][6]} | #{@grid[2][7]} |
+           ---+---+---+---+---+---+---+---
+       5  | #{@grid[3][0]} | #{@grid[3][1]} | #{@grid[3][2]} | #{@grid[3][3]} | #{@grid[3][4]} | #{@grid[3][5]} | #{@grid[3][6]} | #{@grid[3][7]} |
+           ---+---+---+---+---+---+---+---
+       4  | #{@grid[4][0]} | #{@grid[4][1]} | #{@grid[4][2]} | #{@grid[4][3]} | #{@grid[4][4]} | #{@grid[4][5]} | #{@grid[4][6]} | #{@grid[4][7]} |
+           ---+---+---+---+---+---+---+---
+       3  | #{@grid[5][0]} | #{@grid[5][1]} | #{@grid[5][2]} | #{@grid[5][3]} | #{@grid[5][4]} | #{@grid[5][5]} | #{@grid[5][6]} | #{@grid[5][7]} |
+           ---+---+---+---+---+---+---+---
+       2  | #{@grid[6][0]} | #{@grid[6][1]} | #{@grid[6][2]} | #{@grid[6][3]} | #{@grid[6][4]} | #{@grid[6][5]} | #{@grid[6][6]} | #{@grid[6][7]} |
+           ---+---+---+---+---+---+---+---
+       1  | #{@grid[7][0]} | #{@grid[7][1]} | #{@grid[7][2]} | #{@grid[7][3]} | #{@grid[7][4]} | #{@grid[7][5]} | #{@grid[7][6]} | #{@grid[7][7]} |
+           ---+---+---+---+---+---+---+---
+            a   b   c   d   e   f   g   h
+    HEREDOC
   end
 
   def square_occupied?(row, col)
-    grid[row][col] != nil
+    grid[row][col] != ' '
+  end
+
+  def setup_pawns
+    grid.each_with_index do |row, i|
+      row.each_with_index do |_square, j|
+        grid[i][j] = Pawn.new('B') if i == 1
+        grid[i][j] = Pawn.new('W') if i == 6
+      end
+    end
   end
 end
