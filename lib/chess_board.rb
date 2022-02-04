@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 require_relative '../lib/pawn'
+require_relative '../lib/king'
+require_relative '../lib/queen'
+require_relative '../lib/rook'
+require_relative '../lib/bishop'
+require_relative '../lib/horse'
 # a chess board
 class ChessBoard
   attr_reader :grid
@@ -44,4 +49,51 @@ class ChessBoard
       end
     end
   end
+
+  def setup_kings
+    grid[7][4] = King.new('W')
+    grid[0][4] = King.new('B')
+  end
+
+  def setup_queens
+    grid[7][3] = Queen.new('W')
+    grid[0][3] = Queen.new('B')
+  end
+
+  def setup_rooks
+    grid[7][0] = Rook.new('W')
+    grid[7][7] = Rook.new('W')
+
+    grid[0][0] = Rook.new('B')
+    grid[0][7] = Rook.new('B')
+  end
+
+  def setup_bishops
+    grid[7][2] = Bishop.new('W')
+    grid[7][5] = Bishop.new('W')
+
+    grid[0][2] = Bishop.new('B')
+    grid[0][5] = Bishop.new('B')
+  end
+
+  def setup_horses
+    grid[7][1] = Horse.new('W')
+    grid[7][6] = Horse.new('W')
+
+    grid[0][1] = Horse.new('B')
+    grid[0][6] = Horse.new('B')
+  end
+
+  def setup_board
+    setup_pawns
+    setup_kings
+    setup_queens
+    setup_rooks
+    setup_bishops
+    setup_horses
+  end
 end
+
+cb = ChessBoard.new
+cb.setup_board
+cb.show
