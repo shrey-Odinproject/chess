@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+# a chess board
 class ChessBoard
-  attr_accessor :grid
+  attr_reader :grid
 
   def initialize
     @grid = Array.new(8) { Array.new(8) }
@@ -69,6 +70,6 @@ class ChessBoard
   end
 
   def square_occupied?(row, col)
-    grid[row][col] == nil ? false : true
+    grid[row][col] != nil
   end
 end
