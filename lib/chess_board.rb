@@ -42,6 +42,12 @@ class ChessBoard
     grid[row][col] != ' '
   end
 
+  def on_board?(row, column)
+    return true if [row, column].all? { |num| num <= 7 && num >= 0 }
+
+    false
+  end
+
   private
 
   def setup_pawns
@@ -80,11 +86,11 @@ class ChessBoard
   end
 
   def setup_horses
-    grid[7][1] = Horse.new('W')
-    grid[7][6] = Horse.new('W')
+    grid[7][1] = Horse.new('W', self, 7, 1)
+    grid[7][6] = Horse.new('W', self, 7, 6)
 
-    grid[0][1] = Horse.new('B')
-    grid[0][6] = Horse.new('B')
+    grid[0][1] = Horse.new('B', self, 0, 1)
+    grid[0][6] = Horse.new('B', self, 0, 6)
   end
 
   def setup_board
@@ -96,4 +102,3 @@ class ChessBoard
     setup_horses
   end
 end
-
