@@ -11,26 +11,30 @@ class Player
     @chess_board = chess_board
   end
 
-  def grid
-    chess_board.grid
-  end
-
-  def move_horse(horse_row, horse_column, row_final, column_final)
-    grid.each do |row|
+  def move_piece(piece_type, from_row, from_column, to_row, to_column)
+    chess_board.grid.each do |row|
       row.each do |square|
-        if square.class == Horse && square.color == color
-          if square.row == horse_row && square.column == horse_column
-            square.move(row_final, column_final)
-          end
-        end
+        square.move(to_row, to_column) if target_square?(square, piece_type, from_row, from_column)
       end
     end
+  end
+
+  private
+
+  def target_square?(square, piece_type, row, col)
+    # helps targetting a specific piece on board to move
+    return false unless square.instance_of?(piece_type)
+    return false unless square.color == color
+    return false unless square.row == row
+    return false unless square.column == col
+
+    true
   end
 end
 
 cb = ChessBoard.new
 pl = Player.new('W', cb)
-pl.move_horse(7, 6, 5, 5)
-pl.move_horse(5, 5, 3, 4)
-pl.move_horse(3, 4, 1, 3)
-pl.move_horse(1, 3, 0, 5)
+pl.move_piece(Horse, 7, 6, 5, 5)
+pl.move_piece(Horse, 5, 5, 3, 4)
+pl.move_piece(Horse, 3, 4, 1, 3)
+pl.move_piece(Horse, 1, 3, 0, 5)

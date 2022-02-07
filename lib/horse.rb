@@ -16,15 +16,13 @@ class Horse
     color == 'W' ? "\u265e" : "\u2658"
   end
 
-  def move(row_final, column_final)
-    if valid_moves.include?([row_final, column_final])
-      chess_board.grid[row][column] = ' '
-      chess_board.grid[row_final][column_final] = self
-      self.row = row_final
-      self.column = column_final
+  def move(to_row, to_column)
+    if valid_moves.include?([to_row, to_column])
+      chess_board.move_piece_on_board(self, to_row, to_column)
+      update_position(to_row, to_column)
       chess_board.show
     else
-      puts 'horse cant jump there'
+      puts "#{self.class} cant move there"
     end
   end
 
@@ -49,12 +47,17 @@ class Horse
     # return array of cordinates that are not occupied by hors's teammates
     valid = []
     possible_moves.each do |r, c|
-      if !chess_board.square_occupied?(r, c)
+      if !chess_board.occupied_square?(r, c)
         valid.push([r, c])
       elsif chess_board.grid[r][c].color != color
         valid.push([r, c])
       end
     end
     p valid
+  end
+
+  def update_position(row_up, col_up)
+    self.row = row_up
+    self.column = col_up
   end
 end

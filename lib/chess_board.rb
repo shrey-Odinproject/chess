@@ -38,7 +38,7 @@ class ChessBoard
     HEREDOC
   end
 
-  def square_occupied?(row, col)
+  def occupied_square?(row, col)
     grid[row][col] != ' '
   end
 
@@ -48,7 +48,16 @@ class ChessBoard
     false
   end
 
+  def move_piece_on_board(piece, row_final, column_final)
+    edit_square(piece.row, piece.column, ' ') # take piece from
+    edit_square(row_final, column_final, piece) # take piece to
+  end
+
   private
+
+  def edit_square(row, col, val)
+    grid[row][col] = val
+  end
 
   def setup_pawns
     grid.each_with_index do |row, i|
