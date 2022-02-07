@@ -79,11 +79,11 @@ class ChessBoard
   end
 
   def setup_rooks
-    grid[7][0] = Rook.new('W')
-    grid[7][7] = Rook.new('W')
+    grid[7][0] = Rook.new('W', self, 7, 0)
+    grid[7][7] = Rook.new('W', self, 7, 7)
 
-    grid[0][0] = Rook.new('B')
-    grid[0][7] = Rook.new('B')
+    grid[0][0] = Rook.new('B', self, 0, 0)
+    grid[0][7] = Rook.new('B', self, 0, 7)
   end
 
   def setup_bishops

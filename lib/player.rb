@@ -35,6 +35,6 @@ end
 cb = ChessBoard.new
 pl = Player.new('W', cb)
 pl.move_piece(Horse, 7, 6, 5, 5)
-pl.move_piece(Horse, 5, 5, 3, 4)
-pl.move_piece(Horse, 3, 4, 1, 3)
-pl.move_piece(Horse, 1, 3, 0, 5)
+
+ply = Player.new('B', cb)
+ply.move_piece(Rook, 0, 0, 5, 0) # here rook hops over pawn like knight we need to refine possible moves for rook
