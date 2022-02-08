@@ -33,10 +33,13 @@ end
 
 cb = ChessBoard.new
 pl = Player.new('W', cb)
+ply = Player.new('B', cb)
+
 pl.move_piece(Horse, 7, 6, 5, 5)
 
-ply = Player.new('B', cb)
 ply.move_piece(Rook, 0, 0, 4, 0)
 
 pl.move_piece(Bishop, 7, 2, 5, 4)
-pl.move_piece(Bishop, 5, 4, 3, 6)
+
+ply.move_piece(Queen, 0, 3, 2, 3)
+ply.move_piece(Queen, 2, 3, 4, 5)

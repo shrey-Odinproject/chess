@@ -74,8 +74,8 @@ class ChessBoard
   end
 
   def setup_queens
-    grid[7][3] = Queen.new('W')
-    grid[0][3] = Queen.new('B')
+    grid[7][3] = Queen.new('W', self, 7, 3)
+    grid[0][3] = Queen.new('B', self, 0, 3)
   end
 
   def setup_rooks
