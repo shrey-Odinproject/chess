@@ -37,9 +37,6 @@ ply = Player.new('B', cb)
 
 pl.move_piece(Horse, 7, 6, 5, 5)
 
-ply.move_piece(Rook, 0, 0, 4, 0)
+ply.move_piece(King, 0, 4, 1, 5)
 
-pl.move_piece(Bishop, 7, 2, 5, 4)
-
-ply.move_piece(Queen, 0, 3, 2, 3)
-ply.move_piece(Queen, 2, 3, 4, 5)
+ply.move_piece(King, 1, 5, 2, 4)
