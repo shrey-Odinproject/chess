@@ -62,8 +62,8 @@ class ChessBoard
   def setup_pawns
     grid.each_with_index do |row, i|
       row.each_with_index do |_square, j|
-        grid[i][j] = Pawn.new('B') if i == 1
-        grid[i][j] = Pawn.new('W') if i == 6
+        grid[i][j] = Pawn.new('B', self, i, j) if i == 1
+        grid[i][j] = Pawn.new('W', self, i, j) if i == 6
       end
     end
   end

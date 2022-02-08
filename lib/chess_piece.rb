@@ -30,12 +30,12 @@ class ChessPiece
   end
 
   def valid_moves
-    # return array of cordinates that are not occupied by piece's teammates
+    # return array of cordinates that are valid to move to from all possible moves
     valid = []
     possible_moves.each do |r, c|
-      if !chess_board.occupied_square?(r, c) # empty square
+      if !chess_board.occupied_square?(r, c) # move to empty square
         valid.push([r, c])
-      elsif chess_board.grid[r][c].color != color # opp color piece
+      elsif chess_board.grid[r][c].color != color # capture opp color piece
         valid.push([r, c])
       end
     end
