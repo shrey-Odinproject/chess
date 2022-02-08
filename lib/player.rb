@@ -35,9 +35,7 @@ cb = ChessBoard.new
 pl = Player.new('W', cb)
 ply = Player.new('B', cb)
 
-pl.move_piece(6, 4, 5, 4)
-ply.move_piece(1, 4, 2, 4)
-pl.move_piece(5, 4, 4, 4)
-ply.move_piece(1, 3, 2, 3)
-pl.move_piece(4, 4, 3, 3)
-ply.move_piece(2, 3, 3, 3)
+ply.move_piece(1, 4, 3, 4)
+pl.move_piece(6, 3, 4, 3)
+ply.move_piece(3, 4, 4, 3)
+pl.move_piece(7, 3, 4, 3)

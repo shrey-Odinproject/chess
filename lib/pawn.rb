@@ -15,6 +15,10 @@ class Pawn < ChessPiece
     possible = []
     if color == 'B'
 
+      if row == 1 && chess_board.on_board?(row + 2, column) && !chess_board.occupied_square?(row + 2, column)
+        possible.push([row + 2, column]) # 2 step on firstmove
+      end
+
       if chess_board.on_board?(row + 1, column) && !chess_board.occupied_square?(row + 1, column)
         # move only if nothing in front
         possible.push([row + 1, column])
@@ -30,6 +34,11 @@ class Pawn < ChessPiece
         possible.push([row + 1, column + 1])
       end
     else
+
+      if row == 6 && chess_board.on_board?(row - 2, column) && !chess_board.occupied_square?(row - 2, column)
+        possible.push([row - 2, column]) # 2 step on firstmove
+      end
+
       if chess_board.on_board?(row - 1, column) && !chess_board.occupied_square?(row - 1, column)
         # move only if nothing in front
         possible.push([row - 1, column])
