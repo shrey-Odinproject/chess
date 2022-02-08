@@ -87,11 +87,11 @@ class ChessBoard
   end
 
   def setup_bishops
-    grid[7][2] = Bishop.new('W')
-    grid[7][5] = Bishop.new('W')
+    grid[7][2] = Bishop.new('W', self, 7, 2)
+    grid[7][5] = Bishop.new('W', self, 7, 5)
 
-    grid[0][2] = Bishop.new('B')
-    grid[0][5] = Bishop.new('B')
+    grid[0][2] = Bishop.new('B', self, 0, 2)
+    grid[0][5] = Bishop.new('B', self, 0, 5)
   end
 
   def setup_horses

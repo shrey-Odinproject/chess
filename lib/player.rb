@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../lib/horse'
 require_relative '../lib/chess_board'
 # a chess player
 class Player
@@ -37,4 +36,7 @@ pl = Player.new('W', cb)
 pl.move_piece(Horse, 7, 6, 5, 5)
 
 ply = Player.new('B', cb)
-ply.move_piece(Rook, 0, 0, 5, 0) # here rook hops over pawn like knight we need to refine possible moves for rook
+ply.move_piece(Rook, 0, 0, 4, 0)
+
+pl.move_piece(Bishop, 7, 2, 5, 4)
+pl.move_piece(Bishop, 5, 4, 3, 6)
