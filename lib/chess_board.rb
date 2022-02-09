@@ -8,7 +8,7 @@ require_relative '../lib/bishop'
 require_relative '../lib/horse'
 # a chess board
 class ChessBoard
-
+  
   def initialize
     @grid = Array.new(8) { Array.new(8, ' ') }
     setup_board
