@@ -11,10 +11,8 @@ class Player
   end
 
   def move_piece(from_row, from_column, to_row, to_column)
-    chess_board.grid.each do |row|
-      row.each do |square|
-        square.move(to_row, to_column) if target_square?(square, from_row, from_column)
-      end
+    chess_board.all_squares.each do |square|
+      square.move(to_row, to_column) if target_square?(square, from_row, from_column)
     end
   end
 

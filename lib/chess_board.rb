@@ -8,7 +8,6 @@ require_relative '../lib/bishop'
 require_relative '../lib/horse'
 # a chess board
 class ChessBoard
-  attr_reader :grid
 
   def initialize
     @grid = Array.new(8) { Array.new(8, ' ') }
@@ -38,8 +37,12 @@ class ChessBoard
     HEREDOC
   end
 
+  def square(row, col)
+    @grid[row][col]
+  end
+
   def occupied_square?(row, col)
-    grid[row][col] != ' '
+    square(row, col) != ' '
   end
 
   def on_board?(row, column)
@@ -53,53 +56,64 @@ class ChessBoard
     edit_square(row_final, column_final, piece) # take piece to
   end
 
+  def all_squares
+    # array of objects present on each square eg ' ' or Horse obj etc
+    squares = []
+    indxs = *(0..7)
+    indxs.each do |row|
+      indxs.each do |col|
+        squares.push(square(row, col))
+      end
+    end
+    squares
+  end
+
   private
 
   def edit_square(row, col, val)
-    grid[row][col] = val
+    @grid[row][col] = val
   end
 
   def setup_pawns
-    grid.each_with_index do |row, i|
-      row.each_with_index do |_square, j|
-        grid[i][j] = Pawn.new('B', self, i, j) if i == 1
-        grid[i][j] = Pawn.new('W', self, i, j) if i == 6
-      end
+    cols = *(0..7)
+    cols.each do |j|
+      edit_square(1, j, Pawn.new('B', self, 1, j))
+      edit_square(6, j, Pawn.new('W', self, 6, j))
     end
   end
 
   def setup_kings
-    grid[7][4] = King.new('W', self, 7, 4)
-    grid[0][4] = King.new('B', self, 0, 4)
+    edit_square(7, 4, King.new('W', self, 7, 4))
+    edit_square(0, 4, King.new('B', self, 0, 4))
   end
 
   def setup_queens
-    grid[7][3] = Queen.new('W', self, 7, 3)
-    grid[0][3] = Queen.new('B', self, 0, 3)
+    edit_square(7, 3, Queen.new('W', self, 7, 3))
+    edit_square(0, 3, Queen.new('B', self, 0, 3))
   end
 
   def setup_rooks
-    grid[7][0] = Rook.new('W', self, 7, 0)
-    grid[7][7] = Rook.new('W', self, 7, 7)
+    edit_square(7, 0, Rook.new('W', self, 7, 0))
+    edit_square(7, 7, Rook.new('W', self, 7, 7))
 
-    grid[0][0] = Rook.new('B', self, 0, 0)
-    grid[0][7] = Rook.new('B', self, 0, 7)
+    edit_square(0, 0, Rook.new('B', self, 0, 0))
+    edit_square(0, 7, Rook.new('B', self, 0, 7))
   end
 
   def setup_bishops
-    grid[7][2] = Bishop.new('W', self, 7, 2)
-    grid[7][5] = Bishop.new('W', self, 7, 5)
+    edit_square(7, 2, Bishop.new('W', self, 7, 2))
+    edit_square(7, 5, Bishop.new('W', self, 7, 5))
 
-    grid[0][2] = Bishop.new('B', self, 0, 2)
-    grid[0][5] = Bishop.new('B', self, 0, 5)
+    edit_square(0, 2, Bishop.new('B', self, 0, 2))
+    edit_square(0, 5, Bishop.new('B', self, 0, 5))
   end
 
   def setup_horses
-    grid[7][1] = Horse.new('W', self, 7, 1)
-    grid[7][6] = Horse.new('W', self, 7, 6)
+    edit_square(7, 1, Horse.new('W', self, 7, 1))
+    edit_square(7, 6, Horse.new('W', self, 7, 6))
 
-    grid[0][1] = Horse.new('B', self, 0, 1)
-    grid[0][6] = Horse.new('B', self, 0, 6)
+    edit_square(0, 1, Horse.new('B', self, 0, 1))
+    edit_square(0, 6, Horse.new('B', self, 0, 6))
   end
 
   def setup_board

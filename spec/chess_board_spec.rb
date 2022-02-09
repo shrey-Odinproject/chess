@@ -44,8 +44,8 @@ describe ChessBoard do
         r_f = 0
         c_f = 0
         cb.show_piece_movement(piece, r_f, c_f)
-        expect(cb.grid[piece.row][piece.column]).to eq(' ')
-        expect(cb.grid[r_f][c_f]).to eq(piece)
+        expect(cb.square(piece.row, piece.column)).to eq(' ')
+        expect(cb.square(r_f, c_f)).to eq(piece)
       end
     end
   end
