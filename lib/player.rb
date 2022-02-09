@@ -41,3 +41,9 @@ ply.move_piece(5, 3, 6, 3)
 ply.move_piece(6, 3, 7, 2) # below 2moves work if promote to queen
 ply.move_piece(7, 2, 4, 5)
 ply.move_piece(4, 5, 4, 0)
+
+pl.move_piece(6, 4, 4, 4)
+pl.move_piece(4, 4, 3, 4)
+pl.move_piece(3, 4, 2, 4)
+pl.move_piece(2, 4, 1, 4)
+pl.move_piece(1, 4, 0, 5)

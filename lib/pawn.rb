@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/chess_piece'
-require_relative '../lib/queen'
-require_relative '../lib/horse'
-require_relative '../lib/rook'
-require_relative '../lib/bishop'
+
 # a chess pawn
 class Pawn < ChessPiece
   attr_reader :color
@@ -18,7 +15,7 @@ class Pawn < ChessPiece
       chess_board.show_piece_movement(self, to_row, to_column)
       update_position(to_row, to_column)
 
-      promote(to_row, to_column) if can_promote?
+      promote if can_promote?
 
       chess_board.show
     else
@@ -82,26 +79,9 @@ class Pawn < ChessPiece
     end
   end
 
-  def get_choice # this is also doubtful of belonging here 
-    puts ' u can promote to H orse,B ishop,Q ueen,R ook'
-    gets.chomp
-  end
-
-  def make_promotion_piece # should this belong in pawn?
-    case get_choice
-    when 'Q'
-      Queen.new(color, chess_board, row, column)
-    when 'H'
-      Horse.new(color, chess_board, row, column)
-    when 'R'
-      Rook.new(color, chess_board, row, column)
-    when 'B'
-      Bishop.new(color, chess_board, row, column)
-    end
-  end
-
-  def promote(to_row, to_column)
-    promotion_piece = make_promotion_piece
-    chess_board.show_piece_movement(promotion_piece, to_row, to_column)
+  def promote
+    # row and column are both updated before promote is run so promoted piece will have correct coordinates
+    promotion_piece = chess_board.make_promotion_piece(color, row, column)
+    chess_board.show_piece_movement(promotion_piece, row, column)
   end
 end

@@ -8,7 +8,6 @@ require_relative '../lib/bishop'
 require_relative '../lib/horse'
 # a chess board
 class ChessBoard
-  
   def initialize
     @grid = Array.new(8) { Array.new(8, ' ') }
     setup_board
@@ -66,6 +65,24 @@ class ChessBoard
       end
     end
     squares
+  end
+
+  def get_choice # (moved to here from pawn)
+    puts ' u can promote to H orse, B ishop, Q ueen, R ook'
+    gets.chomp
+  end
+
+  def make_promotion_piece(color, row, column) # (moved to here from pawn)
+    case get_choice
+    when 'Q'
+      Queen.new(color, self, row, column)
+    when 'H'
+      Horse.new(color, self, row, column)
+    when 'R'
+      Rook.new(color, self, row, column)
+    when 'B'
+      Bishop.new(color, self, row, column)
+    end
   end
 
   private
