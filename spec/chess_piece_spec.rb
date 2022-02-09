@@ -15,7 +15,7 @@ describe ChessPiece do
       it 'moves the piece on board and updates the position' do
         to_row = 7
         to_column = 0 # 7,0 is present in array returned by valid_moves
-        expect(c_b).to receive(:move_piece_on_board).with(chess_piece, to_row, to_column).and_return(chess_piece)
+        expect(c_b).to receive(:show_piece_movement).with(chess_piece, to_row, to_column).and_return(chess_piece)
         expect(c_b).to receive(:show)
         chess_piece.move(to_row, to_column)
       end
@@ -25,7 +25,7 @@ describe ChessPiece do
       it 'displays error msg' do
         to_row = 2
         to_column = 5 # 2,5 is not in array returned by valid_moves
-        expect(c_b).not_to receive(:move_piece_on_board).with(chess_piece, to_row, to_column)
+        expect(c_b).not_to receive(:show_piece_movement).with(chess_piece, to_row, to_column)
         expect(c_b).not_to receive(:show)
         expect(chess_piece).to receive(:puts).with("#{subject.class} cant move there")
         chess_piece.move(to_row, to_column)

@@ -37,13 +37,13 @@ describe ChessBoard do
     end
   end
 
-  describe '#move_piece_on_board' do
+  describe '#show_piece_movement' do
     let(:piece) { double('chess_piece', row: 7, column: 4) }
     context 'when moving a chess piece on board to destination square' do
       it 'edits the board to display piece movement' do
         r_f = 0
         c_f = 0
-        cb.move_piece_on_board(piece, r_f, c_f)
+        cb.show_piece_movement(piece, r_f, c_f)
         expect(cb.grid[piece.row][piece.column]).to eq(' ')
         expect(cb.grid[r_f][c_f]).to eq(piece)
       end

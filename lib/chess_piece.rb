@@ -2,8 +2,7 @@
 
 # an abstract class
 class ChessPiece
-  attr_reader :color, :chess_board
-  attr_accessor :row, :column
+  attr_reader :color, :chess_board, :row, :column
 
   def initialize(col, chess_board, row, column)
     @color = col
@@ -14,7 +13,7 @@ class ChessPiece
 
   def move(to_row, to_column)
     if valid_moves.include?([to_row, to_column])
-      chess_board.move_piece_on_board(self, to_row, to_column)
+      chess_board.show_piece_movement(self, to_row, to_column)
       update_position(to_row, to_column)
       chess_board.show
     else
@@ -25,8 +24,8 @@ class ChessPiece
   private
 
   def update_position(row_up, col_up)
-    self.row = row_up
-    self.column = col_up
+    @row = row_up
+    @column = col_up
   end
 
   def valid_moves
