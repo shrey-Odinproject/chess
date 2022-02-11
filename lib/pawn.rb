@@ -29,7 +29,7 @@ class Pawn < ChessPiece
     possible = []
     if color == 'B'
 
-      if row == 1 && chess_board.on_board?(row + 2, column) && !chess_board.occupied_square?(row + 2, column)
+      if row == 1 && chess_board.on_board?(row + 2, column) && !chess_board.occupied_square?(row + 2, column) && !chess_board.occupied_square?(row + 1, column)
         possible.push([row + 2, column]) # 2 step on firstmove
       end
 
@@ -49,7 +49,7 @@ class Pawn < ChessPiece
       end
     else
 
-      if row == 6 && chess_board.on_board?(row - 2, column) && !chess_board.occupied_square?(row - 2, column)
+      if row == 6 && chess_board.on_board?(row - 2, column) && !chess_board.occupied_square?(row - 2, column) && !chess_board.occupied_square?(row - 1, column)
         possible.push([row - 2, column]) # 2 step on firstmove
       end
 
@@ -69,7 +69,7 @@ class Pawn < ChessPiece
       end
     end
 
-    add_en_passant_move(possible)
+    # add_en_passant_move(possible)
     possible
   end
 
