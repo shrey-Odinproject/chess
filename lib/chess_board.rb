@@ -8,9 +8,27 @@ require_relative '../lib/bishop'
 require_relative '../lib/horse'
 # a chess board
 class ChessBoard
-  def initialize
+  DICT = {
+    'r' => Rook,
+    'n' => Horse,
+    'k' => King,
+    'q' => Queen,
+    'b' => Bishop,
+    'p' => Pawn,
+
+    'R' => Rook,
+    'N' => Horse,
+    'K' => King,
+    'Q' => Queen,
+    'B' => Bishop,
+    'P' => Pawn,
+
+    ' ' => ' '
+
+  }.freeze
+  def initialize(fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
     @grid = Array.new(8) { Array.new(8, ' ') }
-    setup_board
+    setup_board(fen) # takes in an fen , has default board fen as arg if none passed
   end
 
   def show
@@ -91,54 +109,39 @@ class ChessBoard
     @grid[row][col] = val
   end
 
-  def setup_pawns
-    cols = *(0..7)
-    cols.each do |j|
-      edit_square(1, j, Pawn.new('B', self, 1, j))
-      edit_square(6, j, Pawn.new('W', self, 6, j))
+  def setup_board(fen) # setsup chess board according to fen
+    place_piece(fen_to_arr(final_fen(fen)))
+  end
+
+  def final_fen(fen) # modifies fen so we can work with it
+    final_arr = []
+    fen.split('').each do |chr|
+      if chr.to_i.to_s == chr
+        final_arr.push(' ' * chr.to_i)
+      else
+        final_arr.push(chr)
+      end
     end
+    final_arr.join
   end
 
-  def setup_kings
-    edit_square(7, 4, King.new('W', self, 7, 4))
-    edit_square(0, 4, King.new('B', self, 0, 4))
+  def fen_to_arr(fen) # splits fen into 2d array so we can work with it
+    arr = []
+    fen.split('/').each { |wrd| arr.push(wrd.chars) }
+    arr
   end
 
-  def setup_queens
-    edit_square(7, 3, Queen.new('W', self, 7, 3))
-    edit_square(0, 3, Queen.new('B', self, 0, 3))
+  def descide_color(sq) # helper function
+    sq == sq.upcase ? 'W' : 'B'
   end
 
-  def setup_rooks
-    edit_square(7, 0, Rook.new('W', self, 7, 0))
-    edit_square(7, 7, Rook.new('W', self, 7, 7))
+  def place_piece(arr) # places pieces on a chess board according to a 2d array
+    arr.each_with_index do |row, r_i|
+      row.each_with_index do |sq, c_i|
+        next if DICT[sq] == ' '
 
-    edit_square(0, 0, Rook.new('B', self, 0, 0))
-    edit_square(0, 7, Rook.new('B', self, 0, 7))
-  end
-
-  def setup_bishops
-    edit_square(7, 2, Bishop.new('W', self, 7, 2))
-    edit_square(7, 5, Bishop.new('W', self, 7, 5))
-
-    edit_square(0, 2, Bishop.new('B', self, 0, 2))
-    edit_square(0, 5, Bishop.new('B', self, 0, 5))
-  end
-
-  def setup_horses
-    edit_square(7, 1, Horse.new('W', self, 7, 1))
-    edit_square(7, 6, Horse.new('W', self, 7, 6))
-
-    edit_square(0, 1, Horse.new('B', self, 0, 1))
-    edit_square(0, 6, Horse.new('B', self, 0, 6))
-  end
-
-  def setup_board
-    setup_pawns
-    setup_kings
-    setup_queens
-    setup_rooks
-    setup_bishops
-    setup_horses
+        edit_square(r_i, c_i, DICT[sq].new(descide_color(sq), self, r_i, c_i))
+      end
+    end
   end
 end

@@ -36,5 +36,5 @@ ply = Player.new('B', cb)
 ply.move_piece(1, 4, 3, 4)
 
 pl.move_piece(6, 3, 4, 3)
-pl.move_piece(7,1,5,2)
-pl.move_piece(6,2,4,2)
+pl.move_piece(7, 1, 5, 2)
+pl.move_piece(6, 2, 4, 2)
