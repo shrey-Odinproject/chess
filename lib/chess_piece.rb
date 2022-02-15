@@ -21,13 +21,6 @@ class ChessPiece
     end
   end
 
-  private
-
-  def update_position(row_up, col_up)
-    @row = row_up
-    @column = col_up
-  end
-
   def valid_moves
     # return array of cordinates that are valid to move to from all possible moves
     valid = []
@@ -39,5 +32,12 @@ class ChessPiece
       end
     end
     p valid
+  end
+
+  private
+
+  def update_position(row_up, col_up)
+    @row = row_up
+    @column = col_up
   end
 end
