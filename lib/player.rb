@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../lib/chess_board'
 # a chess player
 class Player
   attr_reader :chess_board, :color
@@ -11,30 +10,16 @@ class Player
   end
 
   def move_piece(from_row, from_column, to_row, to_column)
-    chess_board.all_squares.each do |square|
-      square.move(to_row, to_column) if target_square?(square, from_row, from_column)
+    # checking weather coordinates are valid wont happen here, here we assume arguments given are valid
+    # that checking needs to be seprate
+    piece = chess_board.square(from_row, from_column)
+    return p 'this square is empty' if piece == ' ' # this needs to be seprate
+
+    if piece.color == color
+      piece.move(to_row, to_column)
+      chess_board.show
+    else
+      p "pl_#{color} this is not ur piece" # this needs to be seprate
     end
   end
-
-  private
-
-  def target_square?(square, row, col)
-    # helps targetting a specific piece on board to move
-    return false if square == ' ' # u cant target an empty square
-    return false unless square.color == color # piece of ur color
-    return false unless square.row == row # coordinates of piece
-    return false unless square.column == col
-
-    true
-  end
 end
-
-cb = ChessBoard.new
-pl = Player.new('W', cb)
-ply = Player.new('B', cb)
-
-ply.move_piece(1, 4, 3, 4)
-
-pl.move_piece(6, 3, 4, 3)
-pl.move_piece(7, 1, 5, 2)
-pl.move_piece(6, 2, 4, 2)

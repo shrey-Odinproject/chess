@@ -13,9 +13,8 @@ class ChessPiece
 
   def move(to_row, to_column)
     if valid_moves.include?([to_row, to_column])
-      chess_board.show_piece_movement(self, to_row, to_column)
+      chess_board.piece_movement(self, to_row, to_column)
       update_position(to_row, to_column)
-      chess_board.show
     else
       puts "#{self.class} cant move there"
     end

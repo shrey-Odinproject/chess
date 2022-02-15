@@ -68,7 +68,7 @@ class ChessBoard
     false
   end
 
-  def show_piece_movement(piece, row_final, column_final)
+  def piece_movement(piece, row_final, column_final)
     edit_square(piece.row, piece.column, ' ') # take piece from
     edit_square(row_final, column_final, piece) # take piece to
   end

@@ -12,12 +12,10 @@ class Pawn < ChessPiece
 
   def move(to_row, to_column)
     if valid_moves.include?([to_row, to_column])
-      chess_board.show_piece_movement(self, to_row, to_column)
+      chess_board.piece_movement(self, to_row, to_column)
       update_position(to_row, to_column)
 
       promote if can_promote?
-
-      chess_board.show
     else
       puts "#{self.class} cant move there"
     end
@@ -92,7 +90,7 @@ class Pawn < ChessPiece
   def promote
     # row and column are both updated before promote is run so promoted piece will have correct coordinates
     promotion_piece = chess_board.make_promotion_piece(color, row, column)
-    chess_board.show_piece_movement(promotion_piece, row, column)
+    chess_board.piece_movement(promotion_piece, row, column)
   end
 
   def adjacent_left?
