@@ -80,11 +80,7 @@ class Pawn < ChessPiece
   end
 
   def can_promote?
-    if color == 'B'
-      row == 7
-    else
-      row == 0
-    end
+    color == 'B' ? row == 7 : row == 0
   end
 
   def promote

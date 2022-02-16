@@ -30,7 +30,7 @@ class ChessPiece
         valid.push([r, c])
       end
     end
-    p valid
+    valid
   end
 
   private
