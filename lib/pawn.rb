@@ -10,6 +10,10 @@ class Pawn < ChessPiece
     color == 'W' ? "\u265f" : "\u2659"
   end
 
+  def can_promote? # should this be here too ?
+    color == 'B' ? row == 7 : row == 0
+  end
+
   private
 
   def possible_moves

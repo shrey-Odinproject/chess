@@ -99,7 +99,7 @@ class ChessBoard
     end
   end
 
-  def make_promotion_piece(color, row, column) # (moved to here from pawn)
+  def make_promotion_piece(color, row, column)
     case promotion_choice
     when 'Q'
       Queen.new(color, self, row, column)

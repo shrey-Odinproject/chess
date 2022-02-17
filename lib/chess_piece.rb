@@ -11,15 +11,6 @@ class ChessPiece
     @column = column
   end
 
-  def move(to_row, to_column)
-    if valid_moves.include?([to_row, to_column])
-      chess_board.piece_movement(self, to_row, to_column)
-      update_position(to_row, to_column)
-    else
-      puts "#{self.class} cant move there"
-    end
-  end
-
   def valid_moves
     # return array of cordinates that are valid to move to from all possible moves
     valid = []
@@ -33,10 +24,12 @@ class ChessPiece
     valid
   end
 
-  private
-
-  def update_position(row_up, col_up)
+  def update_position(row_up, col_up) # shouldn't this be private? should this be here?
     @row = row_up
     @column = col_up
+  end
+
+  def can_promote?
+    false
   end
 end
