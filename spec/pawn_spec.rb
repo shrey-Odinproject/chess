@@ -62,16 +62,4 @@ describe Pawn do
       end
     end
   end
-
-  describe '#move' do
-    let(:c_b) { ChessBoard.new('8/3P4/8/8/8/8/8/8') }
-    subject(:chess_pawn) { described_class.new('W', c_b, 1, 3) }
-
-    context 'white pawn moves to promotion square' do
-      it 'pawn promotes' do
-        expect(chess_pawn).to receive(:promote)
-        chess_pawn.move(0, 3)
-      end
-    end
-  end
 end

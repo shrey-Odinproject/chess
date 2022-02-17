@@ -85,13 +85,22 @@ class ChessBoard
     squares
   end
 
-  def get_choice # (moved to here from pawn)
+  def ask_choice # (moved to here from pawn)
     puts ' u can promote to H orse, B ishop, Q ueen, R ook'
     gets.chomp
   end
 
+  def promotion_choice
+    loop do
+      input = ask_choice
+      return input if ['Q', 'H', 'R', 'B'].include?(input)
+
+      puts ' not a valid piece choice'
+    end
+  end
+
   def make_promotion_piece(color, row, column) # (moved to here from pawn)
-    case get_choice
+    case promotion_choice
     when 'Q'
       Queen.new(color, self, row, column)
     when 'H'

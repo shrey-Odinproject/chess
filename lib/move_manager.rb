@@ -3,16 +3,16 @@
 require_relative '../lib/chess_board'
 require_relative '../lib/player'
 # a chess game
-class ChessGame
+class MoveManager
   attr_reader :chess_board, :pl_b, :pl_w
 
   def initialize
-    @chess_board = ChessBoard.new('1B6/7r/3n4/4k1q1/8/6R1/8/N3K3')
+    @chess_board = ChessBoard.new('1B1q4/2P1K3/4n3/8/6k1/6r1/8/N7')
     @pl_w = Player.new('W', chess_board)
     @pl_b = Player.new('B', chess_board)
   end
 
-  def validate_move_piece(player, from_row, from_column, to_row, to_column)
+  def make_legal_move(player, from_row, from_column, to_row, to_column)
     piece = chess_board.square(from_row, from_column)
 
     return puts 'this square is empty' if piece == ' '
@@ -20,9 +20,10 @@ class ChessGame
 
     if legal_move?(player, from_row, from_column, to_row, to_column)
       player.move_piece(piece, to_row, to_column)
+      promote(piece) if piece.instance_of?(Pawn) && can_promote?(piece)
       chess_board.show
     else
-      puts 'illegal move'
+      puts ' illegal move'
     end
   end
 
@@ -53,8 +54,17 @@ class ChessGame
     end
     false
   end
+
+  def can_promote?(pawn)
+    pawn.color == 'B' ? pawn.row == 7 : pawn.row == 0
+  end
+
+  def promote(pawn)
+    # row and column are both updated before promote is run so promoted piece will have correct coordinates
+    promotion_piece = chess_board.make_promotion_piece(pawn.color, pawn.row, pawn.column)
+    chess_board.piece_movement(promotion_piece, pawn.row, pawn.column)
+  end
 end
 
-cg = ChessGame.new
-cg.validate_move_piece(cg.pl_b, 1, 7, 7, 7)
-cg.validate_move_piece(cg.pl_w, 7, 4, 6, 4)
+cg = MoveManager.new
+cg.make_legal_move(cg.pl_w, 1, 2, 0, 3)
