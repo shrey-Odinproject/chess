@@ -2,14 +2,12 @@
 
 require_relative '../lib/chess_board'
 require_relative '../lib/player'
-# a chess game
+# a chess move manager
 class MoveManager
-  attr_reader :chess_board, :pl_b, :pl_w
+  attr_reader :chess_board
 
   def initialize
-    @chess_board = ChessBoard.new('1B1q4/2P1K3/4n3/8/6k1/6r1/8/N7')
-    @pl_w = Player.new('W')
-    @pl_b = Player.new('B')
+    @chess_board = ChessBoard.new('KBk5/P1P5/2P5/8/8/8/8/8')
   end
 
   def make_legal_move(player, from_row, from_column, to_row, to_column)
@@ -31,22 +29,35 @@ class MoveManager
     end
   end
 
+  def checkmated?(player)
+    in_check?(chess_board.king(player.color), chess_board) && mated?(player)
+  end
+
+  def stalemated?(player)
+    !in_check?(chess_board.king(player.color), chess_board) && mated?(player)
+  end
+
   private
+
+  def mated?(player)
+    chess_board.all_pieces(player.color).each do |p_piece| # for all your pieces
+      p_piece.valid_moves.each do |row, col| # for each valid move of that piece
+        copy_board = Marshal.load(Marshal.dump(chess_board)) # we run a simulation of the move
+        copy_piece = copy_board.square(p_piece.row, p_piece.column)
+        player.move_piece(copy_piece, row, col)
+        return false unless in_check?(copy_board.king(player.color), copy_board) # see if king in check after move
+      end
+    end
+    true # after trying all possible move king still in check
+  end
 
   def legal_move?(player, from_row, from_column, to_row, to_column)
     # makes move we tryna make on a copy of current board and sees if king is safe or not after the move
     copy_board = Marshal.load(Marshal.dump(chess_board)) # using a deepcopy seems to work for now(clone/dup fail despite change in obj id)
-    copy_player = Player.new(player.color)
     copy_piece = copy_board.square(from_row, from_column)
 
-    copy_player.move_piece(copy_piece, to_row, to_column) # move piece on copy and see king's status
-    in_check?(king(copy_player.color, copy_board), copy_board) == false
-  end
-
-  def king(color, chess_board)
-    chess_board.all_squares.each do |sq|
-      return sq if sq.instance_of?(King) && sq.color == color
-    end
+    player.move_piece(copy_piece, to_row, to_column) # move piece on copy and see king's status
+    in_check?(copy_board.king(player.color), copy_board) == false
   end
 
   def in_check?(king, chess_board)
@@ -67,8 +78,7 @@ class MoveManager
 end
 
 mm = MoveManager.new
-mm.make_legal_move(mm.pl_w, 1, 2, 0, 3) # pawn promotes
-mm.make_legal_move(mm.pl_w, 0, 3, 2, 2) # valid move only if promoted to horse
-mm.make_legal_move(mm.pl_w, 4, 6, 5, 6) # enemy piece
-mm.make_legal_move(mm.pl_b, 4, 1, 5, 6) # empty square
-mm.make_legal_move(mm.pl_b, 4, 6, 4, 5) # illegal as king goes in check
+pl_b = Player.new('B')
+
+p mm.checkmated?(pl_b)
+p mm.stalemated?(pl_b)

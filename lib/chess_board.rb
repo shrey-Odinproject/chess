@@ -112,6 +112,20 @@ class ChessBoard
     end
   end
 
+  def king(color) # should be in chess_board?
+    all_squares.each do |sq|
+      return sq if sq.instance_of?(King) && sq.color == color
+    end
+  end
+
+  def all_pieces(color)
+    colored_pieces = []
+    all_squares.each do |sqr|
+      colored_pieces.push(sqr) if sqr != ' ' && sqr.color == color
+    end
+    colored_pieces
+  end
+
   private
 
   def edit_square(row, col, val)
