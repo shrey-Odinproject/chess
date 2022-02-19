@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../lib/chess_board'
-require_relative '../lib/player'
 # a chess move manager
 class MoveManager
   attr_reader :chess_board
 
-  def initialize
-    @chess_board = ChessBoard.new('KBk5/P1P5/2P5/8/8/8/8/8')
+  def initialize(chess_board)
+    @chess_board = chess_board
   end
 
   def make_legal_move(player, from_row, from_column, to_row, to_column)
@@ -21,6 +19,7 @@ class MoveManager
         player.move_piece(piece, to_row, to_column)
         promote(piece) if piece.can_promote?
         chess_board.show
+        true
       else
         puts 'illegal move'
       end
@@ -63,7 +62,7 @@ class MoveManager
   def in_check?(king, chess_board)
     chess_board.all_squares.each do |sq|
       if sq != ' ' && sq.color != king.color && sq.valid_moves.include?([king.row, king.column])
-        puts "CHECK !! #{king} is under attack by #{sq}"
+        # puts "CHECK !! #{king} is under attack by #{sq}" # used for debugging
         return true # returns for 1st piece it finds which checks king
       end
     end
@@ -76,9 +75,3 @@ class MoveManager
     chess_board.piece_movement(promotion_piece, pawn.row, pawn.column)
   end
 end
-
-mm = MoveManager.new
-pl_b = Player.new('B')
-
-p mm.checkmated?(pl_b)
-p mm.stalemated?(pl_b)
