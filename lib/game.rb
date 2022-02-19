@@ -5,7 +5,7 @@ require_relative '../lib/player'
 require_relative '../lib/move_manager'
 # a dummy game class that plays a round of chess
 class Game
-  attr_accessor :chess_board, :pl_w, :pl_b, :move_manager, :current_player
+  attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
     @chess_board = ChessBoard.new
@@ -35,7 +35,7 @@ class Game
       fr, fc, tr, tc = get_moves
       move = move_manager.make_legal_move(current_player, fr, fc, tr, tc)
 
-      self.current_player = swap_players if move
+      @current_player = swap_players if move
     end
   end
 

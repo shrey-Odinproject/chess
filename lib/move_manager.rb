@@ -29,14 +29,14 @@ class MoveManager
   end
 
   def checkmated?(player)
-    in_check?(chess_board.king(player.color), chess_board) && mated?(player)
+    in_check?(chess_board.king(player.color)) && mated?(player)
   end
 
   def stalemated?(player)
-    !in_check?(chess_board.king(player.color), chess_board) && mated?(player)
+    !in_check?(chess_board.king(player.color)) && mated?(player)
   end
 
-  private
+  # private
 
   def mated?(player)
     chess_board.all_pieces(player.color).each do |p_piece| # for all your pieces
@@ -59,7 +59,7 @@ class MoveManager
     in_check?(copy_board.king(player.color), copy_board) == false
   end
 
-  def in_check?(king, chess_board)
+  def in_check?(king, chess_board = self.chess_board)
     chess_board.all_squares.each do |sq|
       if sq != ' ' && sq.color != king.color && sq.valid_moves.include?([king.row, king.column])
         # puts "CHECK !! #{king} is under attack by #{sq}" # used for debugging
