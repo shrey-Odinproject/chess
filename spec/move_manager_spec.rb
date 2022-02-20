@@ -47,8 +47,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/ppp3pp/8/8/8/2N5/PPPp1PPP/R3KBNR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('W')
+      piece = c_b.square(6, 0)
       it 'returns false' do
-        expect(mm.legal_move?(plyr, 6, 0, 4, 0)).to be false
+        expect(mm.legal_move?(plyr, piece, 4, 0)).to be false
       end
     end
 
@@ -56,8 +57,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/ppp3pp/8/8/8/8/PPPp1PPP/RN2KBNR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('W')
+      piece = c_b.square(7, 1)
       it 'returns true' do
-        expect(mm.legal_move?(plyr, 7, 1, 6, 3)).to be true
+        expect(mm.legal_move?(plyr, piece, 6, 3)).to be true
       end
     end
 
@@ -65,8 +67,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/ppp3pp/8/8/8/8/PPPp1PPP/RN2KBNR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('W')
+      piece = c_b.square(7, 4)
       it 'returns true' do
-        expect(mm.legal_move?(plyr, 7, 4, 6, 3)).to be true
+        expect(mm.legal_move?(plyr, piece, 6, 3)).to be true
       end
     end
 
@@ -74,8 +77,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/ppp3pp/8/8/8/8/PPPp1PPP/RN2KBNR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('W')
+      piece = c_b.square(7, 4)
       it 'returns true' do
-        expect(mm.legal_move?(plyr, 7, 4, 7, 3)).to be true
+        expect(mm.legal_move?(plyr, piece, 7, 3)).to be true
       end
     end
 
@@ -83,8 +87,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k2r/ppp3pp/8/8/2b5/8/PPPp1PPP/RN2KBNR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('W')
+      piece = c_b.square(7, 4)
       it 'returns false' do
-        expect(mm.legal_move?(plyr, 7, 4, 6, 4)).to be false
+        expect(mm.legal_move?(plyr, piece, 6, 4)).to be false
       end
     end
 
@@ -92,8 +97,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/pppB2pp/8/8/8/8/PPP2PPP/1N1RK1NR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('B')
+      piece = c_b.square(0, 4)
       it 'returns false' do
-        expect(mm.legal_move?(plyr, 0, 4, 1, 3)).to be false
+        expect(mm.legal_move?(plyr, piece, 1, 3)).to be false
       end
     end
 
@@ -101,8 +107,9 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/ppp3pp/8/1B6/8/8/PPP2PPP/RN2K1NR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('B')
+      piece = c_b.square(0, 1)
       it 'returns true' do
-        expect(mm.legal_move?(plyr, 0, 1, 1, 3)).to be true
+        expect(mm.legal_move?(plyr, piece, 1, 3)).to be true
       end
     end
 
@@ -110,8 +117,74 @@ describe MoveManager do
       c_b = ChessBoard.new('rn2k1br/pppQ2pp/2B5/8/8/8/PPP2PPP/RN2K1NR')
       subject(:mm) { described_class.new(c_b) }
       plyr = Player.new('B')
+      piece = c_b.square(0, 1)
       it 'returns true' do
-        expect(mm.legal_move?(plyr, 0, 1, 1, 3)).to be true
+        expect(mm.legal_move?(plyr, piece, 1, 3)).to be true
+      end
+    end
+  end
+
+  describe '#mated?' do
+    context 'when black king is not in check and has nowhere safe to move and it is the only black piece' do
+      c_b = ChessBoard.new('3R4/7R/4k3/R7/8/K7/8/5R2')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns true' do
+        expect(mm.mated?(plyr)).to be true
+      end
+    end
+
+    context 'when black king in check and has nowhere safe to move and it is the only black piece' do
+      c_b = ChessBoard.new('6k1/6Q1/8/8/K7/8/1B6/8')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns true' do
+        expect(mm.mated?(plyr)).to be true
+      end
+    end
+
+    context 'when black king not in check and has nowhere safe to move and another piece is pinned defending the black king' do
+      c_b = ChessBoard.new('BB6/8/8/8/8/K7/5Qn1/7k')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns true' do
+        expect(mm.mated?(plyr)).to be true
+      end
+    end
+
+    context 'when black king in check and has nowhere safe to move and moving any other piece wont deal with check' do
+      c_b = ChessBoard.new('R5k1/4Nppp/8/8/8/8/5K2/8')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns true' do
+        expect(mm.mated?(plyr)).to be true
+      end
+    end
+
+    context 'when black king in check and has safe square to move' do
+      c_b = ChessBoard.new('5k2/6Q1/8/8/K7/8/1B6/8')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns false' do
+        expect(mm.mated?(plyr)).to be false
+      end
+    end
+
+    context 'when black king not in check and has safe square to move' do
+      c_b = ChessBoard.new('3k4/6Q1/8/8/K7/8/1B6/8')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns false' do
+        expect(mm.mated?(plyr)).to be false
+      end
+    end
+
+    context 'when black king not in check and has safe square to move but other black piece is pinned to king' do
+      c_b = ChessBoard.new('3k4/4n3/5Q2/8/K7/8/1B6/8')
+      subject(:mm) { described_class.new(c_b) }
+      plyr = Player.new('B')
+      it 'returns false' do
+        expect(mm.mated?(plyr)).to be false
       end
     end
   end

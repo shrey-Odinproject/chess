@@ -15,7 +15,7 @@ class MoveManager
     return puts 'this is not ur piece' if piece.color != player.color
 
     if piece.valid_moves.include?([to_row, to_column])
-      if legal_move?(player, from_row, from_column, to_row, to_column)
+      if legal_move?(player, piece, to_row, to_column)
         player.move_piece(piece, to_row, to_column)
         promote(piece) if piece.can_promote?
         chess_board.show
@@ -50,10 +50,10 @@ class MoveManager
     true # after trying all possible move king still in check
   end
 
-  def legal_move?(player, from_row, from_column, to_row, to_column)
+  def legal_move?(player, piece, to_row, to_column)
     # makes move we tryna make on a copy of current board and sees if king is safe or not after the move
     copy_board = Marshal.load(Marshal.dump(chess_board)) # using a deepcopy seems to work for now(clone/dup fail despite change in obj id)
-    copy_piece = copy_board.square(from_row, from_column)
+    copy_piece = copy_board.square(piece.row, piece.column)
 
     player.move_piece(copy_piece, to_row, to_column) # move piece on copy and see king's status
     in_check?(copy_board.king(player.color), copy_board) == false
