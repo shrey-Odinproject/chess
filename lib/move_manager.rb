@@ -28,11 +28,29 @@ class MoveManager
     end
   end
 
-  def checkmated?(player)
+  def move_valid?(piece, to_row, to_column) # make_legal_move pt
+    piece.valid_moves.include?([to_row, to_column])
+  end
+
+  def make_move(player, piece, to_row, to_column) # make_legal_move pt
+    player.move_piece(piece, to_row, to_column)
+    promote(piece) if piece.can_promote?
+    chess_board.show
+  end
+
+  def player_piece?(player, piece) # game should have this? # make_legal_move pt
+    piece.color == player.color
+  end
+
+  def piece_exist?(from_row, from_column) # game should have this? # make_legal_move pt
+    chess_board.occupied_square?(from_row, from_column)
+  end
+
+  def checkmated?(player) # game should have this?
     in_check?(chess_board.king(player.color)) && mated?(player)
   end
 
-  def stalemated?(player)
+  def stalemated?(player) # game should have this?
     !in_check?(chess_board.king(player.color)) && mated?(player)
   end
 
