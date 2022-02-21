@@ -15,28 +15,86 @@ class Game
     @current_player = pl_w
   end
 
-  def ask_move_input
-    puts 'enter frm r, frm c, to r, to c'
+  def ask_move_input(player)
+    puts " #{player.color} enter move of form 'd2d4' "
     gets.chomp
   end
 
-  def get_moves
-    moves = []
-    input = ask_move_input
-    input.chars.each do |letr|
-      moves.push(letr.to_i)
+  def verify?(input)
+    input.match?(/^[a-h][1-8][a-h][1-8]$/)
+  end
+
+  def valid_move_input(player)
+    loop do
+      input = ask_move_input(player)
+      return input if verify?(input)
+
+      puts 'invalid form of input'
     end
-    moves
+  end
+
+  def plyr_input_to_grid_input(player_input)
+    fc, fr, tc, tr = player_input.chars
+    fc = fc.ord - 97
+    fr = 8 - fr.to_i
+    tc = tc.ord - 97
+    tr = 8 - tr.to_i
+    [fr, fc, tr, tc]
+  end
+
+  def piece_exist?(from_row, from_column) # game should have this? # make_legal_move pt
+    chess_board.occupied_square?(from_row, from_column)
+  end
+
+  def player_piece?(player, piece) # game should have this? # make_legal_move pt
+    piece.color == player.color
+  end
+
+  def keep_playing
+    until checkmated?(current_player) || stalemated?(current_player)
+
+      fr, fc, tr, tc = plyr_input_to_grid_input(valid_move_input(current_player))
+
+      unless piece_exist?(fr, fc)
+        puts 'this square is empty'
+        next
+      end
+
+      piece = chess_board.square(fr, fc)
+
+      unless player_piece?(current_player, piece)
+        puts 'this is not ur piece'
+        next
+      end
+
+      unless move_manager.valid_move?(piece, tr, tc)
+        puts "#{piece} cant move there"
+        next
+      end
+
+      unless move_manager.legal_move?(current_player, piece, tr, tc)
+        puts 'illegal move'
+        next
+      end
+
+      move_manager.make_move(current_player, piece, tr, tc)
+
+      @current_player = swap_players
+    end
+  end
+
+  def final_message
+    if checkmated?(current_player)
+      puts "#{swap_players.color} Won"
+    else
+      puts 'Draw'
+    end
   end
 
   def play
-    until move_manager.checkmated?(current_player) || move_manager.stalemated?(current_player)
-      puts "#{current_player.color}'s turn"
-      fr, fc, tr, tc = get_moves
-      move = move_manager.make_legal_move(current_player, fr, fc, tr, tc)
-
-      @current_player = swap_players if move
-    end
+    chess_board.show
+    keep_playing
+    final_message
   end
 
   def swap_players
@@ -46,11 +104,15 @@ class Game
       pl_w
     end
   end
+
+  def checkmated?(player) # game should have this?
+    move_manager.in_check?(chess_board.king(player.color)) && move_manager.mated?(player)
+  end
+
+  def stalemated?(player) # game should have this?
+    !move_manager.in_check?(chess_board.king(player.color)) && move_manager.mated?(player)
+  end
 end
 
 g = Game.new
 g.play
-
-# moves for fools mate
-# w- 6555, 6646
-# b- 1424, 0347

@@ -8,27 +8,7 @@ class MoveManager
     @chess_board = chess_board
   end
 
-  def make_legal_move(player, from_row, from_column, to_row, to_column)
-    return puts 'this square is empty' unless chess_board.occupied_square?(from_row, from_column)
-
-    piece = chess_board.square(from_row, from_column)
-    return puts 'this is not ur piece' if piece.color != player.color
-
-    if piece.valid_moves.include?([to_row, to_column])
-      if legal_move?(player, piece, to_row, to_column)
-        player.move_piece(piece, to_row, to_column)
-        promote(piece) if piece.can_promote?
-        chess_board.show
-        true
-      else
-        puts 'illegal move'
-      end
-    else
-      puts "#{piece.class} cant move there"
-    end
-  end
-
-  def move_valid?(piece, to_row, to_column) # make_legal_move pt
+  def valid_move?(piece, to_row, to_column) # make_legal_move pt
     piece.valid_moves.include?([to_row, to_column])
   end
 
@@ -36,22 +16,6 @@ class MoveManager
     player.move_piece(piece, to_row, to_column)
     promote(piece) if piece.can_promote?
     chess_board.show
-  end
-
-  def player_piece?(player, piece) # game should have this? # make_legal_move pt
-    piece.color == player.color
-  end
-
-  def piece_exist?(from_row, from_column) # game should have this? # make_legal_move pt
-    chess_board.occupied_square?(from_row, from_column)
-  end
-
-  def checkmated?(player) # game should have this?
-    in_check?(chess_board.king(player.color)) && mated?(player)
-  end
-
-  def stalemated?(player) # game should have this?
-    !in_check?(chess_board.king(player.color)) && mated?(player)
   end
 
   # private
@@ -92,4 +56,24 @@ class MoveManager
     promotion_piece = chess_board.make_promotion_piece(pawn.color, pawn.row, pawn.column)
     chess_board.piece_movement(promotion_piece, pawn.row, pawn.column)
   end
+
+  # def make_legal_move(player, from_row, from_column, to_row, to_column)
+  #   return puts 'this square is empty' unless chess_board.occupied_square?(from_row, from_column)
+
+  #   piece = chess_board.square(from_row, from_column)
+  #   return puts 'this is not ur piece' if piece.color != player.color
+
+  #   if piece.valid_moves.include?([to_row, to_column])
+  #     if legal_move?(player, piece, to_row, to_column)
+  #       player.move_piece(piece, to_row, to_column)
+  #       promote(piece) if piece.can_promote?
+  #       chess_board.show
+  #       true
+  #     else
+  #       puts 'illegal move'
+  #     end
+  #   else
+  #     puts "#{piece} cant move there"
+  #   end
+  # end
 end

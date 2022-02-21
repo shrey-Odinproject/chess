@@ -188,4 +188,57 @@ describe MoveManager do
       end
     end
   end
+
+  # describe '#make_legal_move' do
+  #   context 'when trying to move a piece that does not exist' do
+  #     c_b = ChessBoard.new
+  #     subject(:mm) { described_class.new(c_b) }
+  #     plyr = Player.new('W')
+  #     it 'produces appropriate error message' do
+  #       expect(mm).to receive(:puts).with('this square is empty').once
+  #       mm.make_legal_move(plyr, 4, 1, 2, 3)
+  #     end
+  #   end
+
+  #   context 'when trying to move opponent\'s piece ' do
+  #     c_b = ChessBoard.new
+  #     subject(:mm) { described_class.new(c_b) }
+  #     plyr = Player.new('W')
+  #     it 'produces appropriate error message' do
+  #       expect(mm).to receive(:puts).with('this is not ur piece').once
+  #       mm.make_legal_move(plyr, 1, 4, 3, 4)
+  #     end
+  #   end
+
+  #   context 'when trying to move a piece to a square it cannot go to ' do
+  #     c_b = ChessBoard.new
+  #     subject(:mm) { described_class.new(c_b) }
+  #     plyr = Player.new('W')
+  #     piece = c_b.square(6, 4)
+  #     it 'produces appropriate error message' do
+  #       expect(mm).to receive(:puts).with("#{piece} cant move there").once
+  #       mm.make_legal_move(plyr, 6, 4, 2, 4)
+  #     end
+  #   end
+
+  #   context 'when trying to move an illegal move' do
+  #     c_b = ChessBoard.new('r2qkb1r/pp3ppp/n4n2/2p2b2/Q7/5P2/PP3PPP/RNB1KBNR')
+  #     subject(:mm) { described_class.new(c_b) }
+  #     plyr = Player.new('B')
+  #     it 'produces appropriate error message' do
+  #       expect(mm).to receive(:puts).with('illegal move').once
+  #       mm.make_legal_move(plyr, 0, 5, 1, 4)
+  #     end
+  #   end
+
+  #   context 'when making a legal move' do
+  #     c_b = ChessBoard.new('r2qkb1r/pp3ppp/n4n2/2p2b2/Q7/5P2/PP3PPP/RNB1KBNR')
+  #     subject(:mm) { described_class.new(c_b) }
+  #     plyr = Player.new('B')
+  #     it 'produces appropriate error message' do
+  #       expect(plyr).to receive(:move_piece)
+  #       mm.make_legal_move(plyr, 0, 3, 1, 3)
+  #     end
+  #   end
+  # end
 end
