@@ -62,4 +62,38 @@ describe Pawn do
       end
     end
   end
+
+  describe '#can_promote?' do
+    context 'when black pawn not on promotion square' do
+      let(:c_b) { ChessBoard.new('3k4/8/4p3/8/3P4/8/2K5/4p3') }
+      subject(:chess_pawn) { described_class.new('B', c_b, 2, 4) }
+      it 'returns false' do
+        expect(chess_pawn).not_to be_can_promote
+      end
+    end
+
+    context 'when black pawn on promotion square' do
+      let(:c_b) { ChessBoard.new('3k4/8/4p3/8/3P4/8/2K5/4p3') }
+      subject(:chess_pawn) { described_class.new('B', c_b, 7, 4) }
+      it 'returns true' do
+        expect(chess_pawn).to be_can_promote
+      end
+    end
+
+    context 'when white pawn not on promotion square' do
+      let(:c_b) { ChessBoard.new('3k4/8/4p3/8/3P4/8/2K5/4p3') }
+      subject(:chess_pawn) { described_class.new('W', c_b, 3, 4) }
+      it 'returns false' do
+        expect(chess_pawn).not_to be_can_promote
+      end
+    end
+
+    context 'when white pawn on promotion square' do
+      let(:c_b) { ChessBoard.new('2Pk4/8/4p3/8/3P4/8/2K5/4p3') }
+      subject(:chess_pawn) { described_class.new('W', c_b, 0, 2) }
+      it 'returns true' do
+        expect(chess_pawn).to be_can_promote
+      end
+    end
+  end
 end

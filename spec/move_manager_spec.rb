@@ -189,56 +189,32 @@ describe MoveManager do
     end
   end
 
-  # describe '#make_legal_move' do
-  #   context 'when trying to move a piece that does not exist' do
-  #     c_b = ChessBoard.new
-  #     subject(:mm) { described_class.new(c_b) }
-  #     plyr = Player.new('W')
-  #     it 'produces appropriate error message' do
-  #       expect(mm).to receive(:puts).with('this square is empty').once
-  #       mm.make_legal_move(plyr, 4, 1, 2, 3)
-  #     end
-  #   end
+  describe '#make_move' do
+    context 'when moving a piece' do
+      chessboard = ChessBoard.new('rnbqkbnr/ppppppPp/8/8/8/8/PPPPP1PP/RNBQKBNR')
+      subject(:m_m) { described_class.new(chessboard) }
+      pl = Player.new('W')
+      it 'sends player the appropriate message' do
+        piece = chessboard.square(7, 1)
+        expect(pl).to receive(:move_piece).with(piece, 5, 2)
+        m_m.make_move(pl, piece, 5, 2)
+      end
+    end
 
-  #   context 'when trying to move opponent\'s piece ' do
-  #     c_b = ChessBoard.new
-  #     subject(:mm) { described_class.new(c_b) }
-  #     plyr = Player.new('W')
-  #     it 'produces appropriate error message' do
-  #       expect(mm).to receive(:puts).with('this is not ur piece').once
-  #       mm.make_legal_move(plyr, 1, 4, 3, 4)
-  #     end
-  #   end
-
-  #   context 'when trying to move a piece to a square it cannot go to ' do
-  #     c_b = ChessBoard.new
-  #     subject(:mm) { described_class.new(c_b) }
-  #     plyr = Player.new('W')
-  #     piece = c_b.square(6, 4)
-  #     it 'produces appropriate error message' do
-  #       expect(mm).to receive(:puts).with("#{piece} cant move there").once
-  #       mm.make_legal_move(plyr, 6, 4, 2, 4)
-  #     end
-  #   end
-
-  #   context 'when trying to move an illegal move' do
-  #     c_b = ChessBoard.new('r2qkb1r/pp3ppp/n4n2/2p2b2/Q7/5P2/PP3PPP/RNB1KBNR')
-  #     subject(:mm) { described_class.new(c_b) }
-  #     plyr = Player.new('B')
-  #     it 'produces appropriate error message' do
-  #       expect(mm).to receive(:puts).with('illegal move').once
-  #       mm.make_legal_move(plyr, 0, 5, 1, 4)
-  #     end
-  #   end
-
-  #   context 'when making a legal move' do
-  #     c_b = ChessBoard.new('r2qkb1r/pp3ppp/n4n2/2p2b2/Q7/5P2/PP3PPP/RNB1KBNR')
-  #     subject(:mm) { described_class.new(c_b) }
-  #     plyr = Player.new('B')
-  #     it 'produces appropriate error message' do
-  #       expect(plyr).to receive(:move_piece)
-  #       mm.make_legal_move(plyr, 0, 3, 1, 3)
-  #     end
-  #   end
-  # end
+    context 'when moving pawn to promotion square ' do
+      chessboard = ChessBoard.new('rnbqkbnr/ppppppPp/8/8/8/8/PPPPP1PP/RNBQKBNR')
+      subject(:m_m) { described_class.new(chessboard) }
+      let(:prom_piece) { double('Q/H/R/B', color: 'W', chess_board: chessboard, row: 0, column: 7) }
+      pl = Player.new('W')
+      before do
+        allow(chessboard).to receive(:make_promotion_piece).and_return(prom_piece)
+      end
+      it 'pawn becomes new piece' do
+        piece = chessboard.square(1, 6)
+        # expect(pl).to receive(:move_piece).with(piece, 0, 7)
+        m_m.make_move(pl, piece, 0, 7)
+        expect(chessboard.square(0, 7)).to eq(prom_piece)
+      end
+    end
+  end
 end

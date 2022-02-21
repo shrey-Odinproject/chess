@@ -52,7 +52,7 @@ class Game
 
   def keep_playing
     until checkmated?(current_player) || stalemated?(current_player)
-
+      # a turn starts here
       fr, fc, tr, tc = plyr_input_to_grid_input(valid_move_input(current_player))
 
       unless piece_exist?(fr, fc)
@@ -76,9 +76,10 @@ class Game
         puts 'illegal move'
         next
       end
-
+      # input is good to go after all these tests (need encapsulation)
       move_manager.make_move(current_player, piece, tr, tc)
-
+      chess_board.show
+      # a turn ends here
       @current_player = swap_players
     end
   end

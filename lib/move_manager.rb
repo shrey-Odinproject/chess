@@ -15,7 +15,6 @@ class MoveManager
   def make_move(player, piece, to_row, to_column) # make_legal_move pt
     player.move_piece(piece, to_row, to_column)
     promote(piece) if piece.can_promote?
-    chess_board.show
   end
 
   # private
@@ -51,29 +50,9 @@ class MoveManager
     false
   end
 
-  def promote(pawn)
+  def promote(pawn) # should this be handled by move manager?
     # row and column are both updated before promote is run so promoted piece will have correct coordinates
     promotion_piece = chess_board.make_promotion_piece(pawn.color, pawn.row, pawn.column)
     chess_board.piece_movement(promotion_piece, pawn.row, pawn.column)
   end
-
-  # def make_legal_move(player, from_row, from_column, to_row, to_column)
-  #   return puts 'this square is empty' unless chess_board.occupied_square?(from_row, from_column)
-
-  #   piece = chess_board.square(from_row, from_column)
-  #   return puts 'this is not ur piece' if piece.color != player.color
-
-  #   if piece.valid_moves.include?([to_row, to_column])
-  #     if legal_move?(player, piece, to_row, to_column)
-  #       player.move_piece(piece, to_row, to_column)
-  #       promote(piece) if piece.can_promote?
-  #       chess_board.show
-  #       true
-  #     else
-  #       puts 'illegal move'
-  #     end
-  #   else
-  #     puts "#{piece} cant move there"
-  #   end
-  # end
 end
