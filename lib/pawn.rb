@@ -71,39 +71,4 @@ class Pawn < ChessPiece
     # add_en_passant_move(possible)
     possible
   end
-
-  # def adjacent_left?
-  #   # check if left adj square has opp colored pawn
-  #   left_adj = chess_board.square(row, column - 1)
-  #   left_adj.instance_of?(Pawn) && left_adj.color != color
-  # end
-
-  # def adjacent_right?
-  #   right_adj = chess_board.square(row, column + 1)
-  #   right_adj.instance_of?(Pawn) && right_adj.color != color
-  # end
-
-  # def left_en_passant_move
-  #   color == 'W' ? [row - 1, column - 1] : [row + 1, column - 1]
-  # end
-
-  # def can_left_en_passant?
-  #   color == 'W' ? adjacent_left? && row == 3 : adjacent_left? && row == 4
-  # end
-
-  # def right_en_passant_move
-  #   color == 'W' ? [row - 1, column + 1] : [row + 1, column + 1]
-  # end
-
-  # def can_right_en_passant?
-  #   color == 'W' ? adjacent_right? && row == 3 : adjacent_right? && row == 4
-  # end
-
-  # def add_en_passant_move(possible)
-  #   if can_left_en_passant?
-  #     possible.push(left_en_passant_move)
-  #   elsif can_right_en_passant?
-  #     possible.push(right_en_passant_move)
-  #   end
-  # end
 end
