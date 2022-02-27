@@ -55,4 +55,104 @@ class MoveManager
     promotion_piece = chess_board.make_promotion_piece(pawn.color, pawn.row, pawn.column)
     chess_board.piece_movement(promotion_piece, pawn.row, pawn.column)
   end
+
+  def short_castle_path_clear?(king)
+    !chess_board.occupied_square?(king.row, 5) && !chess_board.occupied_square?(king.row, 6)
+  end
+
+  def long_catsle_path_clear?(king)
+    !chess_board.occupied_square?(king.row,
+                                  1) && !chess_board.occupied_square?(king.row,
+                                                                      2) && !chess_board.occupied_square?(king.row, 3)
+  end
+
+  def short_path_under_attack?(king)
+    path = [[king.row, 5], [king.row, 6]]
+    path.each do |path_sq|
+      chess_board.all_squares.each do |sq|
+        return true if sq != ' ' && sq.color != king.color && sq.valid_moves.include?(path_sq)
+      end
+    end
+    false
+  end
+
+  def long_path_under_attack?(king)
+    path = [[king.row, 1], [king.row, 2], [king.row, 3]]
+    path.each do |path_sq|
+      chess_board.all_squares.each do |sq|
+        return true if sq != ' ' && sq.color != king.color && sq.valid_moves.include?(path_sq)
+      end
+    end
+    false
+  end
+
+  def king_safe_after_short_castle?(player, king, short_rook)
+    copy_board = Marshal.load(Marshal.dump(chess_board))
+    copy_king = copy_board.king(king.color)
+    copy_short_rook = copy_board.square(short_rook.row, short_rook.column)
+    player.short_castle(copy_king, copy_short_rook)
+    in_check?(copy_board.king(player.color), copy_board) == false
+  end
+
+  def king_safe_after_long_castle?(player, king, long_rook)
+    copy_board = Marshal.load(Marshal.dump(chess_board))
+    copy_king = copy_board.king(king.color)
+    copy_long_rook = copy_board.square(long_rook.row, long_rook.column)
+    player.long_castle(copy_king, copy_long_rook)
+    in_check?(copy_board.king(player.color), copy_board) == false
+  end
+
+  def king_rook_not_moved?(king, rook)
+    king.has_moved_before == false && rook.has_moved_before == false
+  end
+
+  def can_castle_short?(player, king, rook)
+    unless king_rook_not_moved?(king, rook)
+      puts 'rook/king moved'
+      return false
+    end
+    if in_check?(king)
+      puts ' king in check'
+      return false
+    end
+    unless short_castle_path_clear?(king)
+      puts 'short castle path not clear'
+      return false
+    end
+    if short_path_under_attack?(king)
+      puts 'short castle path undr attack'
+      return false
+    end
+    unless king_safe_after_short_castle?(player, king, rook)
+      puts 'king unsafe after castle'
+      return false
+    end
+
+    true
+  end
+
+  def can_castle_long?(player, king, rook)
+    unless king_rook_not_moved?(king, rook)
+      puts 'rook/king moved'
+      return false
+    end
+    if in_check?(king)
+      puts ' king in check'
+      return false
+    end
+    unless long_catsle_path_clear?(king)
+      puts 'long castle path not clear'
+      return false
+    end
+    if long_path_under_attack?(king)
+      puts 'long castle path undr attack'
+      return false
+    end
+    unless king_safe_after_long_castle?(player, king, rook)
+      puts 'king unsafe after castle'
+      return false
+    end
+
+    true
+  end
 end

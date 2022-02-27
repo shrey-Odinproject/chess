@@ -3,12 +3,14 @@
 # an abstract class
 class ChessPiece
   attr_reader :color, :chess_board, :row, :column
+  attr_accessor :has_moved_before
 
   def initialize(col, chess_board, row, column)
     @color = col
     @chess_board = chess_board
     @row = row
     @column = column
+    @has_moved_before = false
   end
 
   def valid_moves
