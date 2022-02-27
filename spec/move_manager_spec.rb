@@ -217,4 +217,101 @@ describe MoveManager do
       end
     end
   end
+
+  describe '#can_castle_short?' do
+    context 'when king and rook on different ranks' do
+      c_b = ChessBoard.new('rnbqkbnr/pppppppp/8/8/6P1/3NB3/PPPPK2P/RNBQ3R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      it 'returns false' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(6, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+    context 'when king has moved' do
+      c_b = ChessBoard.new('r3k2r/pppppp1P/2b2n2/3nb3/2B1Q3/2N5/PP1B2PP/R3K2R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      before do
+        king = c_b.square(7, 4)
+        mm.make_move(player, king, 7, 3)
+      end
+      it 'returns false' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(7, 3)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+
+    context 'when rook has moved' do
+      c_b = ChessBoard.new('r3k2r/pppppp1P/2b2n2/3nb3/2B1Q3/2N5/PP1B2PP/R3K2R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      before do
+        rook = c_b.square(7, 7)
+        mm.make_move(player, rook, 7, 6)
+      end
+      it 'returns false' do
+        rook = c_b.square(7, 6)
+        king = c_b.square(7, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+
+    context 'when king in check' do
+      c_b = ChessBoard.new('r3k3/pppppp1P/2b2n2/3nb3/2B1r3/2N5/PP1B2PP/R3K2R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      it 'returns false' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(7, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+
+    context 'when any piece present between king and rook' do
+      c_b = ChessBoard.new('r3k3/pppppp1P/2b2n2/1r1nb3/2B5/8/PP1B2PP/R3K1NR')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      it 'returns false' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(7, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+
+    context 'when any square in short castle path under attack' do
+      c_b = ChessBoard.new('r3k3/pppppp1P/2b2n2/1r1n4/2B2N2/3b4/PP1B2PP/R3K2R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      it 'returns false' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(7, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+
+    context 'when king in check after castle' do
+      c_b = ChessBoard.new('r3k3/pppbp2P/2b2n2/1r1n4/2B2N2/8/PP1B2Pp/R3K2R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      it 'returns false' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(7, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be false
+      end
+    end
+
+    context 'when short castling conditions are met' do
+      c_b = ChessBoard.new('r3k3/pppbp3/2b2n2/1r1n4/5N2/8/PP1B1BPP/R3K2R')
+      subject(:mm) { described_class.new(c_b) }
+      player = Player.new('W')
+      it 'returns true' do
+        rook = c_b.square(7, 7)
+        king = c_b.square(7, 4)
+        expect(mm.can_castle_short?(player, king, rook)).to be true
+      end
+    end
+  end
 end

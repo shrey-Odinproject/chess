@@ -65,7 +65,7 @@ class Game
         puts 'this is not ur piece'
         next
       end
-
+      # braching of noarmal/castle move
       piece2 = chess_board.square(tr, tc)
       if piece2 != ' ' && piece.color == piece2.color && piece.instance_of?(King) && piece2.instance_of?(Rook)
         if tc - fc == 3 && move_manager.can_castle_short?(current_player, piece, piece2) # hardcoded diffrentiator for long/short castle

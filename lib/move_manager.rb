@@ -56,7 +56,7 @@ class MoveManager
     chess_board.piece_movement(promotion_piece, pawn.row, pawn.column)
   end
 
-  def short_castle_path_clear?(king)
+  def short_castle_path_clear?(king) # hardcoded path (king.row,5/6)
     !chess_board.occupied_square?(king.row, 5) && !chess_board.occupied_square?(king.row, 6)
   end
 
@@ -107,31 +107,19 @@ class MoveManager
   end
 
   def can_castle_short?(player, king, rook)
-    unless king_rook_not_moved?(king, rook)
-      puts 'rook/king moved'
-      return false
-    end
-    if in_check?(king)
-      puts ' king in check'
-      return false
-    end
-    unless short_castle_path_clear?(king)
-      puts 'short castle path not clear'
-      return false
-    end
-    if short_path_under_attack?(king)
-      puts 'short castle path undr attack'
-      return false
-    end
-    unless king_safe_after_short_castle?(player, king, rook)
-      puts 'king unsafe after castle'
-      return false
-    end
+    return false unless king.row == rook.row
+    return false unless king_rook_not_moved?(king, rook)
+    return false if in_check?(king)
+    return false unless short_castle_path_clear?(king)
+    return false if short_path_under_attack?(king)
+    return false unless king_safe_after_short_castle?(player, king, rook)
 
     true
   end
 
   def can_castle_long?(player, king, rook)
+    return false unless king.row == rook.row
+
     unless king_rook_not_moved?(king, rook)
       puts 'rook/king moved'
       return false
