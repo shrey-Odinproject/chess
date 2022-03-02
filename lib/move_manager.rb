@@ -164,14 +164,16 @@ class MoveManager
   end
 
   def can_en_passant_left?(pawn, last_move)
-    false unless pawn.on_passant_rank?
-    false unless last_move_is_double_step?(last_move)
+    return false unless pawn.on_passant_rank?
+    return false unless last_move_is_double_step?(last_move)
+
     victim_adjacent_left?(pawn, last_move)
   end
 
   def can_en_passant_right?(pawn, last_move)
-    false unless pawn.on_passant_rank?
-    false unless last_move_is_double_step?(last_move)
+    return false unless pawn.on_passant_rank?
+    return false unless last_move_is_double_step?(last_move)
+
     victim_adjacent_right?(pawn, last_move)
   end
 end
