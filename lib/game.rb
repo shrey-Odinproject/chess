@@ -8,7 +8,7 @@ class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
-    @chess_board = ChessBoard.new('r3k2r/pppppp1P/2b2n2/3nb3/2B1q3/2NQ4/PPPB2Pp/R3K2R')
+    @chess_board = ChessBoard.new('rnnqk2r/pppppppp/8/4P3/6K1/8/PPPP1PPP/RNBQ1BNR')
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
@@ -76,6 +76,16 @@ class Game
           puts 'cant castle'
           next
         end
+      elsif left_en_passant_trigger(piece, tr, tc)
+        return [piece] if move_manager.can_en_passant_left?(piece, move_manager.last_move)
+
+        puts 'can\'t en_passant left'
+        next
+      elsif right_en_passant_trigger(piece, tr, tc)
+        return [piece] if move_manager.can_en_passant_right?(piece, move_manager.last_move)
+
+        puts 'can\'t en_passant right'
+        next
       else
         unless move_manager.valid_move?(piece, tr, tc)
           puts "#{piece} cant move there"
@@ -91,12 +101,36 @@ class Game
     end
   end
 
+  def left_en_passant_trigger(piece, tr, tc)
+    return false unless piece.instance_of?(Pawn)
+    return false unless chess_board.square(tr, tc) == ' '
+
+    if piece.color == 'W'
+      (tr - piece.row) == -1 && (tc - piece.column) == -1
+    else
+      (tr - piece.row) == 1 && (tc - piece.column) == -1
+    end
+  end
+
+  def right_en_passant_trigger(piece, tr, tc)
+    return false unless piece.instance_of?(Pawn)
+    return false unless chess_board.square(tr, tc) == ' '
+
+    if piece.color == 'W'
+      (tr - piece.row) == -1 && (tc - piece.column) == 1
+    else
+      (tr - piece.row) == 1 && (tc - piece.column) == 1
+    end
+  end
+
   def single_move_turn(current_player)
     piece, tr, tc = checks_before_moving(current_player) # structure is hacky
-    if tc == 'short'
-      current_player.short_castle(piece, tr)
+    if tr.nil? && tc.nil?
+      current_player.en_passant(piece, move_manager.last_move)
     elsif tc == 'long'
       current_player.long_castle(piece, tr)
+    elsif tc == 'short'
+      current_player.short_castle(piece, tr)
     else
       move_manager.make_move(current_player, piece, tr, tc)
     end
