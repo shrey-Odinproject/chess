@@ -23,4 +23,14 @@ class Player
     move_piece(king, king.row, king.column - 2)
     move_piece(rook, king.row, king.column + 1)
   end
+
+  def en_passant(pawn, last_move)
+    victim = last_move[0]
+    move_piece(pawn, victim.row, victim.column)
+    if pawn.color == 'W'
+      move_piece(pawn, pawn.row - 1, pawn.column)
+    else
+      move_piece(pawn, pawn.row + 1, pawn.column)
+    end
+  end
 end
