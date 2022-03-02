@@ -14,6 +14,10 @@ class Pawn < ChessPiece
     color == 'B' ? row == 7 : row == 0
   end
 
+  def on_passant_rank?
+    color == 'B' ? row == 4 : row == 3
+  end
+
   private
 
   def possible_moves
