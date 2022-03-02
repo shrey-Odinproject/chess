@@ -314,4 +314,46 @@ describe MoveManager do
       end
     end
   end
+
+  describe '#can_en_passant_left?' do
+    context 'when pawn is not on \'passant\' rank' do
+      c_b = ChessBoard.new('rnbqkbnr/pp1ppppp/8/2p5/3P4/8/PPP1PPPP/RNBQKBNR')
+      subject(:mm) { described_class.new(c_b) }
+      it 'returns false' do
+        pawn = c_b.square(4, 3)
+        last_move = [c_b.square(3, 2), 3, 2, 1]
+        expect(mm.can_en_passant_left?(pawn, last_move)).to be false
+      end
+    end
+
+    context 'when last move wasn\'t a pawn double step' do
+      c_b = ChessBoard.new('rnbqkbnr/pp1ppppp/8/2pP4/8/8/PPP1PPPP/RNBQKBNR')
+      subject(:mm) { described_class.new(c_b) }
+      it 'returns false' do
+        pawn = c_b.square(3, 3)
+        last_move = [c_b.square(3, 2), 3, 2, 2]
+        expect(mm.can_en_passant_left?(pawn, last_move)).to be false
+      end
+    end
+
+    context 'when no enemy pawn on adjacent left' do
+      c_b = ChessBoard.new('rnbqkbnr/p1pppppp/8/1p1P4/8/8/PPP1PPPP/RNBQKBNR')
+      subject(:mm) { described_class.new(c_b) }
+      it 'returns false' do
+        pawn = c_b.square(3, 3)
+        last_move = [c_b.square(3, 1), 3, 1, 1]
+        expect(mm.can_en_passant_left?(pawn, last_move)).to be false
+      end
+    end
+
+    context 'when enemy pawn does a double step and lands just on left of our pawn' do
+      c_b = ChessBoard.new('rnbqkbnr/pp1ppppp/8/2pP4/8/8/PPP1PPPP/RNBQKBNR')
+      subject(:mm) { described_class.new(c_b) }
+      it 'returns true' do
+        pawn = c_b.square(3, 3)
+        last_move = [c_b.square(3, 2), 3, 2, 1]
+        expect(mm.can_en_passant_left?(pawn, last_move)).to be true
+      end
+    end
+  end
 end

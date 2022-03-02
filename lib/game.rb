@@ -8,7 +8,7 @@ class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
-    @chess_board = ChessBoard.new('rnnqk2r/pppppppp/8/4P3/6K1/8/PPPP1PPP/RNBQ1BNR')
+    @chess_board = ChessBoard.new('rnnqk2r/ppppp1pp/5p2/8/4P1K1/8/PPPP1PPP/RNBQ1BNR')
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
