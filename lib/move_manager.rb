@@ -3,9 +3,11 @@
 # a chess move manager
 class MoveManager
   attr_reader :chess_board
+  attr_accessor :last_move
 
   def initialize(chess_board)
     @chess_board = chess_board
+    @last_move = nil
   end
 
   def valid_move?(piece, to_row, to_column) # make_legal_move pt
@@ -13,6 +15,7 @@ class MoveManager
   end
 
   def make_move(player, piece, to_row, to_column) # make_legal_move pt
+    self.last_move = [piece, to_row, to_column, piece.row] # piece.row holds the old value of row (from where piece came)
     player.move_piece(piece, to_row, to_column)
     promote(piece) if piece.can_promote?
   end
@@ -142,5 +145,33 @@ class MoveManager
     end
 
     true
+  end
+
+  def last_move_is_double_step?(last_move)
+    piece, to_row, _to_column, from_row = last_move
+    piece.instance_of?(Pawn) && (from_row - to_row).abs == 2
+  end
+
+  def victim_adjacent_left?(pawn, last_move)
+    left_adj = chess_board.square(pawn.row, pawn.column - 1)
+    # left_adj.instance_of?(Pawn) && left_adj.color != pawn.color
+    left_adj == last_move[0]
+  end
+
+  def victim_adjacent_right?(pawn, last_move)
+    right_adj = chess_board.square(pawn.row, pawn.column + 1)
+    right_adj == last_move[0]
+  end
+
+  def can_en_passant_left?(pawn, last_move)
+    false unless pawn.on_passant_rank?
+    false unless last_move_is_double_step?(last_move)
+    victim_adjacent_left?(pawn, last_move)
+  end
+
+  def can_en_passant_right?(pawn, last_move)
+    false unless pawn.on_passant_rank?
+    false unless last_move_is_double_step?(last_move)
+    victim_adjacent_right?(pawn, last_move)
   end
 end
