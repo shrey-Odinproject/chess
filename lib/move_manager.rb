@@ -15,7 +15,7 @@ class MoveManager
   end
 
   def make_move(player, piece, to_row, to_column) # make_legal_move pt
-    self.last_move = [piece, to_row, to_column, piece.row] # piece.row holds the old value of row (from where piece came)
+    self.last_move = [piece, to_row, to_column, piece.row, piece.column] # piece.row holds the old value of row (from where piece came)
     player.move_piece(piece, to_row, to_column)
     promote(piece) if piece.can_promote?
   end
@@ -148,7 +148,7 @@ class MoveManager
   end
 
   def last_move_is_double_step?(last_move)
-    piece, to_row, _to_column, from_row = last_move
+    piece, to_row, _to_column, from_row, _from_column = last_move
     piece.instance_of?(Pawn) && (from_row - to_row).abs == 2
   end
 

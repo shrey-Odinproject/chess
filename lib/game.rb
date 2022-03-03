@@ -3,25 +3,61 @@
 require_relative '../lib/chess_board'
 require_relative '../lib/player'
 require_relative '../lib/move_manager'
+require 'yaml'
+
 # a dummy game class that plays a round of chess
 class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
-    @chess_board = ChessBoard.new('rnnqk2r/ppppp1pp/5p2/8/4P1K1/8/PPPP1PPP/RNBQ1BNR')
+    @chess_board = ChessBoard.new
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
     @current_player = pl_w
   end
 
+  def to_s
+    lm = move_manager.last_move
+    %{
+      #{chess_board.show}
+      last_(non_castle)move: #{lm[0]} moved from #{(lm[4] + 97).chr}#{8 - lm[3]} to #{(lm[2] + 97).chr}#{8 - lm[1]}
+      #{current_player.color} to move!
+        }
+  end
+
+  def save_to_file(chess_obj)
+    Dir.mkdir('saves') unless Dir.exist?('saves') # holds all yaml saves user makes
+    print 'enter name of save file: '
+    input = gets.chomp
+    File.open("saves/#{input}.yaml", 'w') do |save_file|
+      save_file.puts YAML::dump(chess_obj)
+    end
+  end
+
+  def self.load_from_file # had to make this a class method cause u cant load instance by calling load on another instance
+    Dir["saves/*"].each.with_index(1) { |file, idx| puts "#{idx} #{file}" }
+    print 'To select the file to load enter only the filename: '
+    input = gets.chomp
+    if !File.exist?("saves/#{input}.yaml")
+      puts 'No save found!!'
+      puts '----------'
+      load_from_file
+    else
+      puts 'Save load succesfull!'
+      File.open("saves/#{input}.yaml", 'r') do |save_file|
+        YAML::load(save_file)
+      end
+    end
+  end
+
   def ask_move_input(player)
-    puts " #{player.color} enter move of form 'd2d4' "
+    print "#{player.color} enter move of form 'd2d4': "
     gets.chomp
   end
 
   def verify?(input)
-    input.match?(/^[a-h][1-8][a-h][1-8]$/)
+    input.match?(/^[a-h][1-8][a-h][1-8]$/) || input == 'save'
   end
 
   def valid_move_input(player)
@@ -50,55 +86,58 @@ class Game
     piece.color == player.color
   end
 
-  def checks_before_moving(current_player) # performs series of tests on player's input returns info on piece and final destination
-    loop do
-      fr, fc, tr, tc = plyr_input_to_grid_input(valid_move_input(current_player))
-
-      unless piece_exist?(fr, fc)
-        puts 'this square is empty'
-        next
-      end
-
-      piece = chess_board.square(fr, fc)
-
-      unless player_piece?(current_player, piece)
-        puts 'this is not ur piece'
-        next
-      end
-      # braching of noarmal/castle move
-      piece2 = chess_board.square(tr, tc)
-      if piece2 != ' ' && piece.color == piece2.color && piece.instance_of?(King) && piece2.instance_of?(Rook)
-        if tc - fc == 3 && move_manager.can_castle_short?(current_player, piece, piece2) # hardcoded diffrentiator for long/short castle
-          return [piece, piece2, 'short']
-        elsif fc - tc == 4 && move_manager.can_castle_long?(current_player, piece, piece2)
-          return [piece, piece2, 'long']
-        else
-          puts 'cant castle'
-          next
-        end
-      elsif left_en_passant_trigger(piece, tr, tc)
-        return [piece] if move_manager.can_en_passant_left?(piece, move_manager.last_move)
-
-        puts 'can\'t en_passant left'
-        next
-      elsif right_en_passant_trigger(piece, tr, tc)
-        return [piece] if move_manager.can_en_passant_right?(piece, move_manager.last_move)
-
-        puts 'can\'t en_passant right'
-        next
-      else
-        unless move_manager.valid_move?(piece, tr, tc)
-          puts "#{piece} cant move there"
-          next
-        end
-
-        unless move_manager.legal_move?(current_player, piece, tr, tc)
-          puts 'illegal move'
-          next
-        end
-        return [piece, tr, tc]
-      end
+  def determine_move_type(fr, fc, tr, tc)
+    unless piece_exist?(fr, fc)
+      puts 'this square is empty'
+      return false
     end
+
+    piece = chess_board.square(fr, fc)
+
+    unless player_piece?(current_player, piece)
+      puts 'this is not ur piece'
+      return false
+    end
+    # braching of noarmal/castle move
+    piece2 = chess_board.square(tr, tc)
+    if piece2 != ' ' && piece.color == piece2.color && piece.instance_of?(King) && piece2.instance_of?(Rook)
+      if tc - fc == 3 && move_manager.can_castle_short?(current_player, piece, piece2) # hardcoded diffrentiator for long/short castle
+        return [piece, piece2, 'short']
+      elsif fc - tc == 4 && move_manager.can_castle_long?(current_player, piece, piece2)
+        return [piece, piece2, 'long']
+      else
+        puts 'cant castle'
+        return false
+      end
+    elsif left_en_passant_trigger(piece, tr, tc)
+      return [piece] if move_manager.can_en_passant_left?(piece, move_manager.last_move)
+
+      puts 'can\'t en_passant left'
+      return false
+    elsif right_en_passant_trigger(piece, tr, tc)
+      return [piece] if move_manager.can_en_passant_right?(piece, move_manager.last_move)
+
+      puts 'can\'t en_passant right'
+      return false
+    else
+      unless move_manager.valid_move?(piece, tr, tc)
+        puts "#{piece} cant move there"
+        return false
+      end
+
+      unless move_manager.legal_move?(current_player, piece, tr, tc)
+        puts 'illegal move'
+        return false
+      end
+      return [piece, tr, tc]
+    end
+  end
+
+  def determine_input_type(current_player) # performs series of tests on player's input returns info on piece and final destination
+    input = valid_move_input(current_player)
+    return 'save' if input == 'save'
+
+    plyr_input_to_grid_input(input)
   end
 
   def left_en_passant_trigger(piece, tr, tc)
@@ -123,8 +162,8 @@ class Game
     end
   end
 
-  def single_move_turn(current_player)
-    piece, tr, tc = checks_before_moving(current_player) # structure is hacky
+  def move_according_to_type(move_type)
+    piece, tr, tc = move_type # structure is hacky
     if tr.nil? && tc.nil?
       current_player.en_passant(piece, move_manager.last_move)
     elsif tc == 'long'
@@ -140,7 +179,17 @@ class Game
   def keep_playing
     until checkmated?(current_player) || stalemated?(current_player)
 
-      single_move_turn(current_player)
+      input_type = determine_input_type(current_player)
+      if input_type == 'save'
+        save_to_file(self)
+        puts 'Saved !'
+        break
+      end
+      fr, fc, tr, tc = input_type
+      move_type = determine_move_type(fr, fc, tr, tc)
+      next if move_type == false
+
+      move_according_to_type(move_type)
 
       @current_player = swap_players
     end
@@ -149,13 +198,12 @@ class Game
   def final_message
     if checkmated?(current_player)
       puts "#{swap_players.color} Won"
-    else
+    elsif stalemated?(current_player)
       puts 'Draw'
     end
   end
 
   def play
-    chess_board.show
     keep_playing
     final_message
   end
@@ -176,6 +224,3 @@ class Game
     !move_manager.in_check?(chess_board.king(player.color)) && move_manager.mated?(player)
   end
 end
-
-g = Game.new
-g.play
