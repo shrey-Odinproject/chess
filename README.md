@@ -6,3 +6,5 @@ player v comp
 better design (ood)
 
 good test fen: ('r3kbnr/ppppp1pp/5p2/8/4P3/8/PPPP1PPP/RNBQK2R')
+
+making the structure of enpassant branch and castle branch similar # nt that imp rn
