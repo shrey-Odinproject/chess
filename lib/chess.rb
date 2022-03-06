@@ -22,7 +22,7 @@ def new_game_or_load_save
 end
 
 def rerun
-  puts "Would you like to rerun Press 'y' for yes or 'any other key' for no."
+  puts "Would you like to rerun Press 'y'/'any other key' for yes/no."
   repeat_input = gets.chomp.downcase
   if repeat_input == 'y'
     new_game_or_load_save

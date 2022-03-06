@@ -10,7 +10,7 @@ class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
-    @chess_board = ChessBoard.new('rnbqk2r/p1p1pppp/3p4/8/4P3/1N6/PPPP1PPP/R3KB1R')
+    @chess_board = ChessBoard.new('rnbqkbnr/1ppp1ppp/p7/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR')
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
@@ -57,7 +57,7 @@ class Game
   end
 
   def verify?(input)
-    input.match?(/^[a-h][1-8][a-h][1-8]$/) || input == 'save'
+    input.match?(/^[a-h][1-8][a-h][1-8]$/) || input == 'save' || input == 'resign'
   end
 
   def valid_move_input(player)
@@ -136,6 +136,7 @@ class Game
   def determine_input_type(current_player) # performs series of tests on player's input returns info on piece and final destination
     input = valid_move_input(current_player)
     return 'save' if input == 'save'
+    return 'resign' if input == 'resign'
 
     plyr_input_to_grid_input(input)
   end
@@ -176,6 +177,8 @@ class Game
         save_to_file(self)
         puts 'Saved !'
         break
+      elsif input_type == 'resign'
+        return 2211
       end
       fr, fc, tr, tc = input_type
       move_type = determine_move_type(fr, fc, tr, tc)
@@ -187,17 +190,19 @@ class Game
     end
   end
 
-  def final_message
+  def final_message(match_result)
     if checkmated?(current_player)
       puts "#{swap_players.color} Won"
     elsif stalemated?(current_player)
       puts 'Draw'
+    elsif match_result == 2211
+      puts "#{current_player.color} resigned!! #{swap_players.color} Won"
     end
   end
 
   def play
-    keep_playing
-    final_message
+    match_result = keep_playing
+    final_message(match_result)
   end
 
   def swap_players
