@@ -10,7 +10,7 @@ def new_game_or_load_save
     new_game = Game.new
     new_game.chess_board.show
     new_game.play
-  elsif input == 'l'
+  elsif input == 'l' && Dir.exist?('saves')
     loaded_obj = Game.load_from_file
     puts loaded_obj
     loaded_obj.play

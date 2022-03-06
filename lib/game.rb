@@ -10,7 +10,7 @@ class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
-    @chess_board = ChessBoard.new
+    @chess_board = ChessBoard.new('rnbqk2r/p1p1pppp/3p4/8/4P3/1N6/PPPP1PPP/R3KB1R')
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
@@ -21,7 +21,7 @@ class Game
     lm = move_manager.last_move
     %{
       #{chess_board.show}
-      last_(non_castle)move: #{lm[0]} moved from #{(lm[4] + 97).chr}#{8 - lm[3]} to #{(lm[2] + 97).chr}#{8 - lm[1]}
+      last_(non_castle/passant)move: #{lm[0]} moved from #{(lm[4] + 97).chr}#{8 - lm[3]} to #{(lm[2] + 97).chr}#{8 - lm[1]}
       #{current_player.color} to move!
         }
   end
@@ -36,7 +36,7 @@ class Game
   end
 
   def self.load_from_file # had to make this a class method cause u cant load instance by calling load on another instance
-    Dir["saves/*"].each.with_index(1) { |file, idx| puts "#{idx} #{file}" }
+    Dir['saves/*'].each.with_index(1) { |file, idx| puts "#{idx} #{file}" }
     print 'To select the file to load enter only the filename: '
     input = gets.chomp
     if !File.exist?("saves/#{input}.yaml")
@@ -163,16 +163,8 @@ class Game
   end
 
   def move_according_to_type(move_type)
-    piece, tr, tc = move_type # structure is hacky
-    if tr.nil? && tc.nil?
-      current_player.en_passant(piece, move_manager.last_move)
-    elsif tc == 'long'
-      current_player.long_castle(piece, tr)
-    elsif tc == 'short'
-      current_player.short_castle(piece, tr)
-    else
-      move_manager.make_move(current_player, piece, tr, tc)
-    end
+    piece, tr, tc = move_type
+    move_manager.make_move(current_player, piece, tr, tc)
     chess_board.show
   end
 

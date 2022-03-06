@@ -7,17 +7,25 @@ class MoveManager
 
   def initialize(chess_board)
     @chess_board = chess_board
-    @last_move = nil
+    @last_move = ['no_piece', -1, -1, -1, -1] # bug while saving FIX LAST MOVE
   end
 
   def valid_move?(piece, to_row, to_column) # make_legal_move pt
     piece.valid_moves.include?([to_row, to_column])
   end
 
-  def make_move(player, piece, to_row, to_column) # make_legal_move pt
-    self.last_move = [piece, to_row, to_column, piece.row, piece.column] # piece.row holds the old value of row (from where piece came)
-    player.move_piece(piece, to_row, to_column)
-    promote(piece) if piece.can_promote?
+  def make_move(player, piece, to_row, to_column) # make_legal_move pt # structure is hacky
+    if to_row.nil? && to_column.nil?
+      player.en_passant(piece, last_move)
+    elsif to_column == 'long'
+      player.long_castle(piece, to_row) # here piece is king and to_row is a rook piece
+    elsif to_column == 'short'
+      player.short_castle(piece, to_row) # here piece is king and to_row is a rook piece
+    else
+      self.last_move = [piece, to_row, to_column, piece.row, piece.column] # piece.row holds the old value of row (from where piece came)
+      player.move_piece(piece, to_row, to_column)
+      promote(piece) if piece.can_promote? # function works as expected only when normal moves are tracked
+    end
   end
 
   # private
