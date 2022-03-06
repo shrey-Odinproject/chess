@@ -5,12 +5,12 @@ require_relative '../lib/player'
 require_relative '../lib/move_manager'
 require 'yaml'
 
-# a dummy game class that plays a round of chess
+# class that plays a round of chess
 class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
   def initialize
-    @chess_board = ChessBoard.new('rnbqkbnr/1ppp1ppp/p7/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR')
+    @chess_board = ChessBoard.new
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
@@ -78,11 +78,11 @@ class Game
     [fr, fc, tr, tc]
   end
 
-  def piece_exist?(from_row, from_column) # game should have this? # make_legal_move pt
+  def piece_exist?(from_row, from_column) # game should have this?
     chess_board.occupied_square?(from_row, from_column)
   end
 
-  def player_piece?(player, piece) # game should have this? # make_legal_move pt
+  def player_piece?(player, piece) # game should have this? 
     piece.color == player.color
   end
 
@@ -91,7 +91,7 @@ class Game
       puts 'this square is empty'
       return false
     end
-
+    # returns differ based on move type (hacky)
     piece = chess_board.square(fr, fc)
 
     unless player_piece?(current_player, piece)
@@ -102,23 +102,23 @@ class Game
     piece2 = chess_board.square(tr, tc)
     if piece2 != ' ' && piece.color == piece2.color && piece.instance_of?(King) && piece2.instance_of?(Rook)
       if tc - fc == 3 && move_manager.can_castle_short?(current_player, piece, piece2) # hardcoded diffrentiator for long/short castle
-        return [piece, piece2, 'short']
+        [piece, piece2, 'short']
       elsif fc - tc == 4 && move_manager.can_castle_long?(current_player, piece, piece2)
-        return [piece, piece2, 'long']
+        [piece, piece2, 'long']
       else
         puts 'cant castle'
-        return false
+        false
       end
     elsif left_en_passant_trigger(piece, tr, tc)
       return [piece] if move_manager.can_en_passant_left?(piece, move_manager.last_move)
 
       puts 'can\'t en_passant left'
-      return false
+      false
     elsif right_en_passant_trigger(piece, tr, tc)
       return [piece] if move_manager.can_en_passant_right?(piece, move_manager.last_move)
 
       puts 'can\'t en_passant right'
-      return false
+      false
     else
       unless move_manager.valid_move?(piece, tr, tc)
         puts "#{piece} cant move there"
@@ -129,21 +129,21 @@ class Game
         puts 'illegal move'
         return false
       end
-      return [piece, tr, tc]
+      [piece, tr, tc]
     end
   end
 
-  def determine_input_type(current_player) # performs series of tests on player's input returns info on piece and final destination
+  def determine_input_type(current_player)
     input = valid_move_input(current_player)
     return 'save' if input == 'save'
     return 'resign' if input == 'resign'
 
-    plyr_input_to_grid_input(input)
+    plyr_input_to_grid_input(input) # it is a 'move' input
   end
 
   def left_en_passant_trigger(piece, tr, tc)
     return false unless piece.instance_of?(Pawn)
-    return false unless chess_board.square(tr, tc) == ' '
+    return false if piece_exist?(tr, tc)
 
     if piece.color == 'W'
       (tr - piece.row) == -1 && (tc - piece.column) == -1
@@ -154,7 +154,7 @@ class Game
 
   def right_en_passant_trigger(piece, tr, tc)
     return false unless piece.instance_of?(Pawn)
-    return false unless chess_board.square(tr, tc) == ' '
+    return false if piece_exist?(tr, tc)
 
     if piece.color == 'W'
       (tr - piece.row) == -1 && (tc - piece.column) == 1

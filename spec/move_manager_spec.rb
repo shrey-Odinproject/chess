@@ -193,8 +193,8 @@ describe MoveManager do
     context 'when moving a piece' do
       chessboard = ChessBoard.new('rnbqkbnr/ppppppPp/8/8/8/8/PPPPP1PP/RNBQKBNR')
       subject(:m_m) { described_class.new(chessboard) }
-      pl = Player.new('W')
-      it 'sends player the appropriate message' do
+      let(:pl) { double('plyr', color: 'W', move_piece: 'lc') }
+      it 'sends player move_piece message' do
         piece = chessboard.square(7, 1)
         expect(pl).to receive(:move_piece).with(piece, 5, 2)
         m_m.make_move(pl, piece, 5, 2)
@@ -214,6 +214,30 @@ describe MoveManager do
         # expect(pl).to receive(:move_piece).with(piece, 0, 7)
         m_m.make_move(pl, piece, 0, 7)
         expect(chessboard.square(0, 7)).to eq(prom_piece)
+      end
+    end
+
+    context 'when long castling' do
+      chessboard = ChessBoard.new('rnbqkbnr/1ppp1ppp/p7/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR')
+      subject(:m_m) { described_class.new(chessboard) }
+      let(:pl) { double('plyr', color: 'W', long_castle: 'lc') }
+      it 'sends long_castle message to player' do
+        king = chessboard.square(7, 4)
+        rook = chessboard.square(7, 0)
+        expect(pl).to receive(:long_castle).with(king, rook)
+        m_m.make_move(pl, king, rook, 'long')
+      end
+    end
+
+    context 'when taking en_passant' do
+      chessboard = ChessBoard.new('rnbqkbnr/1pp2ppp/p7/3pP3/8/8/PPPB1PPP/RNB1KQNR')
+      subject(:m_m) { described_class.new(chessboard) }
+      let(:pl) { double('plyr', color: 'W', en_passant: 'ep') }
+      it 'sends en_passant message to player' do
+        lm = m_m.last_move
+        piece = chessboard.square(4, 3)
+        expect(pl).to receive(:en_passant).with(piece, lm)
+        m_m.make_move(pl, piece, nil, nil)
       end
     end
   end

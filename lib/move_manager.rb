@@ -10,11 +10,7 @@ class MoveManager
     @last_move = ['no_piece', -1, -1, -1, -1] # bug while saving FIX LAST MOVE
   end
 
-  def valid_move?(piece, to_row, to_column) # make_legal_move pt
-    piece.valid_moves.include?([to_row, to_column])
-  end
-
-  def make_move(player, piece, to_row, to_column) # make_legal_move pt # structure is hacky
+  def make_move(player, piece, to_row, to_column) # structure is hacky
     if to_row.nil? && to_column.nil?
       player.en_passant(piece, last_move)
     elsif to_column == 'long'
@@ -28,7 +24,19 @@ class MoveManager
     end
   end
 
-  # private
+  def valid_move?(piece, to_row, to_column)
+    piece.valid_moves.include?([to_row, to_column])
+  end
+
+  def in_check?(king, chess_board = self.chess_board)
+    chess_board.all_squares.each do |sq|
+      if sq != ' ' && sq.color != king.color && sq.valid_moves.include?([king.row, king.column])
+        # puts "CHECK !! #{king} is under attack by #{sq}" # used for debugging
+        return true # returns for 1st piece it finds which checks king
+      end
+    end
+    false
+  end
 
   def mated?(player)
     chess_board.all_pieces(player.color).each do |p_piece| # for all your pieces
@@ -51,15 +59,59 @@ class MoveManager
     in_check?(copy_board.king(player.color), copy_board) == false
   end
 
-  def in_check?(king, chess_board = self.chess_board)
-    chess_board.all_squares.each do |sq|
-      if sq != ' ' && sq.color != king.color && sq.valid_moves.include?([king.row, king.column])
-        # puts "CHECK !! #{king} is under attack by #{sq}" # used for debugging
-        return true # returns for 1st piece it finds which checks king
-      end
-    end
-    false
+  def can_en_passant_left?(pawn, last_move)
+    return false unless pawn.on_passant_rank? # should this be in en passant trigger check?
+    return false unless last_move_is_double_step?(last_move)
+
+    victim_adjacent_left?(pawn, last_move)
   end
+
+  def can_en_passant_right?(pawn, last_move)
+    return false unless pawn.on_passant_rank?
+    return false unless last_move_is_double_step?(last_move)
+
+    victim_adjacent_right?(pawn, last_move)
+  end
+
+  def can_castle_short?(player, king, rook)
+    return false unless king.row == rook.row
+    return false unless king_rook_not_moved?(king, rook)
+    return false if in_check?(king)
+    return false unless short_castle_path_clear?(king)
+    return false if short_path_under_attack?(king)
+    return false unless king_safe_after_short_castle?(player, king, rook)
+
+    true
+  end
+
+  def can_castle_long?(player, king, rook)
+    return false unless king.row == rook.row
+
+    unless king_rook_not_moved?(king, rook)
+      puts 'rook/king moved'
+      return false
+    end
+    if in_check?(king)
+      puts ' king in check'
+      return false
+    end
+    unless long_catsle_path_clear?(king)
+      puts 'long castle path not clear'
+      return false
+    end
+    if long_path_under_attack?(king)
+      puts 'long castle path undr attack'
+      return false
+    end
+    unless king_safe_after_long_castle?(player, king, rook)
+      puts 'king unsafe after castle'
+      return false
+    end
+
+    true
+  end
+
+  private
 
   def promote(pawn) # should this be handled by move manager?
     # row and column are both updated before promote is run so promoted piece will have correct coordinates
@@ -117,44 +169,6 @@ class MoveManager
     king.has_moved_before == false && rook.has_moved_before == false
   end
 
-  def can_castle_short?(player, king, rook)
-    return false unless king.row == rook.row
-    return false unless king_rook_not_moved?(king, rook)
-    return false if in_check?(king)
-    return false unless short_castle_path_clear?(king)
-    return false if short_path_under_attack?(king)
-    return false unless king_safe_after_short_castle?(player, king, rook)
-
-    true
-  end
-
-  def can_castle_long?(player, king, rook)
-    return false unless king.row == rook.row
-
-    unless king_rook_not_moved?(king, rook)
-      puts 'rook/king moved'
-      return false
-    end
-    if in_check?(king)
-      puts ' king in check'
-      return false
-    end
-    unless long_catsle_path_clear?(king)
-      puts 'long castle path not clear'
-      return false
-    end
-    if long_path_under_attack?(king)
-      puts 'long castle path undr attack'
-      return false
-    end
-    unless king_safe_after_long_castle?(player, king, rook)
-      puts 'king unsafe after castle'
-      return false
-    end
-
-    true
-  end
-
   def last_move_is_double_step?(last_move)
     piece, to_row, _to_column, from_row, _from_column = last_move
     piece.instance_of?(Pawn) && (from_row - to_row).abs == 2
@@ -162,26 +176,11 @@ class MoveManager
 
   def victim_adjacent_left?(pawn, last_move)
     left_adj = chess_board.square(pawn.row, pawn.column - 1)
-    # left_adj.instance_of?(Pawn) && left_adj.color != pawn.color
     left_adj == last_move[0]
   end
 
   def victim_adjacent_right?(pawn, last_move)
     right_adj = chess_board.square(pawn.row, pawn.column + 1)
     right_adj == last_move[0]
-  end
-
-  def can_en_passant_left?(pawn, last_move)
-    return false unless pawn.on_passant_rank?
-    return false unless last_move_is_double_step?(last_move)
-
-    victim_adjacent_left?(pawn, last_move)
-  end
-
-  def can_en_passant_right?(pawn, last_move)
-    return false unless pawn.on_passant_rank?
-    return false unless last_move_is_double_step?(last_move)
-
-    victim_adjacent_right?(pawn, last_move)
   end
 end
