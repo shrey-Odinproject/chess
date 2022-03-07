@@ -183,9 +183,9 @@ class Game
 
   def final_message(match_result)
     if checkmated?(current_player)
-      puts "#{swap_players.color} Won"
+      puts "#{swap_players.color} Won! via checkmate"
     elsif stalemated?(current_player)
-      puts 'Draw'
+      puts 'stalemate! Draw'
     elsif match_result == 2211
       puts "#{current_player.color} resigned!! #{swap_players.color} Won"
     end

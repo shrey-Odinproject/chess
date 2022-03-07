@@ -1,0 +1,248 @@
+--- !ruby/object:Game
+chess_board: &1 !ruby/object:ChessBoard
+  grid:
+  - - !ruby/object:Rook
+      color: B
+      chess_board: *1
+      row: 0
+      column: 0
+      has_moved_before: false
+    - " "
+    - !ruby/object:Bishop
+      color: B
+      chess_board: *1
+      row: 0
+      column: 2
+      has_moved_before: false
+    - !ruby/object:Queen
+      color: B
+      chess_board: *1
+      row: 0
+      column: 3
+      has_moved_before: false
+    - !ruby/object:King
+      color: B
+      chess_board: *1
+      row: 0
+      column: 4
+      has_moved_before: false
+    - !ruby/object:Bishop
+      color: B
+      chess_board: *1
+      row: 0
+      column: 5
+      has_moved_before: false
+    - " "
+    - !ruby/object:Rook
+      color: B
+      chess_board: *1
+      row: 0
+      column: 7
+      has_moved_before: false
+  - - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 0
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 1
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 2
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 3
+      has_moved_before: false
+    - " "
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 5
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 6
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 1
+      column: 7
+      has_moved_before: false
+  - - " "
+    - " "
+    - !ruby/object:Horse
+      color: B
+      chess_board: *1
+      row: 2
+      column: 2
+      has_moved_before: true
+    - " "
+    - " "
+    - &2 !ruby/object:Horse
+      color: B
+      chess_board: *1
+      row: 2
+      column: 5
+      has_moved_before: true
+    - " "
+    - " "
+  - - " "
+    - " "
+    - " "
+    - " "
+    - !ruby/object:Pawn
+      color: B
+      chess_board: *1
+      row: 3
+      column: 4
+      has_moved_before: true
+    - " "
+    - " "
+    - " "
+  - - " "
+    - " "
+    - !ruby/object:Bishop
+      color: W
+      chess_board: *1
+      row: 4
+      column: 2
+      has_moved_before: true
+    - " "
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 4
+      column: 4
+      has_moved_before: true
+    - " "
+    - " "
+    - " "
+  - - " "
+    - " "
+    - " "
+    - " "
+    - " "
+    - !ruby/object:Horse
+      color: W
+      chess_board: *1
+      row: 5
+      column: 5
+      has_moved_before: true
+    - " "
+    - " "
+  - - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 0
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 1
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 2
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 3
+      has_moved_before: false
+    - " "
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 5
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 6
+      has_moved_before: false
+    - !ruby/object:Pawn
+      color: W
+      chess_board: *1
+      row: 6
+      column: 7
+      has_moved_before: false
+  - - !ruby/object:Rook
+      color: W
+      chess_board: *1
+      row: 7
+      column: 0
+      has_moved_before: false
+    - !ruby/object:Horse
+      color: W
+      chess_board: *1
+      row: 7
+      column: 1
+      has_moved_before: false
+    - !ruby/object:Bishop
+      color: W
+      chess_board: *1
+      row: 7
+      column: 2
+      has_moved_before: false
+    - !ruby/object:Queen
+      color: W
+      chess_board: *1
+      row: 7
+      column: 3
+      has_moved_before: false
+    - !ruby/object:King
+      color: W
+      chess_board: *1
+      row: 7
+      column: 4
+      has_moved_before: false
+    - " "
+    - " "
+    - !ruby/object:Rook
+      color: W
+      chess_board: *1
+      row: 7
+      column: 7
+      has_moved_before: false
+pl_b: !ruby/object:Player
+  color: B
+pl_w: &3 !ruby/object:Player
+  color: W
+move_manager: !ruby/object:MoveManager
+  chess_board: *1
+  last_move:
+  - *2
+  - 2
+  - 5
+  - 0
+  - 6
+current_player: *3
+false_move_messages:
+- this square is empty
+- this is not ur piece
+- can't castle
+- can't en_passant left
+- can't en_passant right
+- illegal move
+- false
