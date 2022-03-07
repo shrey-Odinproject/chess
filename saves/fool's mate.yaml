@@ -238,11 +238,3 @@ move_manager: !ruby/object:MoveManager
   - 6
   - 6
 current_player: *3
-false_move_messages:
-- this square is empty
-- this is not ur piece
-- can't castle
-- can't en_passant left
-- can't en_passant right
-- illegal move
-- false

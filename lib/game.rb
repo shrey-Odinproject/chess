@@ -9,14 +9,14 @@ require 'yaml'
 class Game
   attr_reader :chess_board, :pl_w, :pl_b, :move_manager, :current_player
 
+  FALSE_MOVE_MESSAGES = ['this square is empty', 'this is not ur piece', 'can\'t castle', 'can\'t en_passant left',
+                         'can\'t en_passant right', 'illegal move', false].freeze
   def initialize(c_b = ChessBoard.new)
     @chess_board = c_b
     @pl_b = Player.new('B')
     @pl_w = Player.new('W')
     @move_manager = MoveManager.new(chess_board)
     @current_player = pl_w
-    @false_move_messages = ['this square is empty', 'this is not ur piece', 'can\'t castle', 'can\'t en_passant left',
-                            'can\'t en_passant right', 'illegal move', false]
   end
 
   def to_s
@@ -108,23 +108,6 @@ class Game
     plyr_input_to_grid_input(input) # it is a 'move' input
   end
 
-  def display_move_type_response(move_type)
-    case move_type
-    when 'this square is empty'
-      puts 'this square is empty'
-    when 'this is not ur piece'
-      puts 'this is not ur piece'
-    when 'can\'t castle'
-      puts 'can\'t castle'
-    when 'can\'t en_passant left'
-      puts 'can\'t en_passant left'
-    when 'can\'t en_passant right'
-      puts 'can\'t en_passant right'
-    when 'illegal move'
-      puts 'illegal move'
-    end
-  end
-
   def keep_playing
     until checkmated?(current_player) || stalemated?(current_player)
 
@@ -138,7 +121,7 @@ class Game
       end
       fr, fc, tr, tc = input_type
       move_type = determine_move_type(fr, fc, tr, tc)
-      if @false_move_messages.include?(move_type)
+      if FALSE_MOVE_MESSAGES.include?(move_type)
         display_move_type_response(move_type)
         next
       end
@@ -238,5 +221,22 @@ class Game
 
   def castle_trigger?(piece, piece2)
     piece2 != ' ' && piece.color == piece2.color && piece.instance_of?(King) && piece2.instance_of?(Rook)
+  end
+
+  def display_move_type_response(move_type)
+    case move_type
+    when 'this square is empty'
+      puts 'this square is empty'
+    when 'this is not ur piece'
+      puts 'this is not ur piece'
+    when 'can\'t castle'
+      puts 'can\'t castle'
+    when 'can\'t en_passant left'
+      puts 'can\'t en_passant left'
+    when 'can\'t en_passant right'
+      puts 'can\'t en_passant right'
+    when 'illegal move'
+      puts 'illegal move'
+    end
   end
 end
